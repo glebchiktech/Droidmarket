@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="gingerbread">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Android Market v1.9 (PWA Final)</title>
+    <!-- Мета для PWA -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <style>
+        :root { --market-bg: #141414; --android-green: #a4c639; --text-main: #ffffff; --card-bg: #252525; --card-border: #333333; --h-text: #ffffff; }
+        [data-theme="holo"] { --market-bg: #e2e2e2; --android-green: #0099cc; --text-main: #222222; --card-bg: #ffffff; --card-border: #c5c5c5; --h-text: #ffffff; }
+        body { font-family: sans-serif; background-color: var(--market-bg); color: var(--text-main); margin: 0; display: flex; flex-direction: column; min-height: 100vh; }
+        
+        header { position: sticky; top: 0; background: #000; padding: 15px; border-bottom: 3px solid var(--android-green); display: flex; align-items: center; gap: 10px; z-index: 1000; }
+        header h1 { color: var(--h-text); margin: 0; font-size: 20px; cursor: pointer; }
+        
+        .banner { background: var(--android-green); color: white; padding: 10px; text-align: center; cursor: pointer; font-weight: bold; }
+        
+        .market-container { max-width: 900px; margin: auto; padding: 20px; flex: 1; width: 100%; box-sizing: border-box; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .card { background: var(--card-bg); border: 2px solid var(--card-border); padding: 25px; border-radius: 15px; transition: 0.3s; }
+        .card:hover { border-color: var(--android-green); box-shadow: 0 0 15px var(--android-green); }
+        
+        .page { display: none; padding: 20px; }
+        textarea { width: 100%; height: 200px; background: #fff; color: #000; font-family: monospace; }
+        .menu-btn { cursor: pointer; font-size: 24px; color: var(--android-green); margin-left: auto; }
+        .dropdown { display: none; position: absolute; right: 10px; top: 60px; background: #333; border: 1px solid #555; padding: 10px; z-index: 100; width: 180px; }
+        .download-btn { background: var(--android-green); padding: 12px; text-decoration: none; color: #fff; border-radius: 6px; display: block; text-align: center; margin-top: 15px; font-weight: bold; }
+        button { padding: 12px 25px; background: var(--android-green); border: none; cursor: pointer; color: white; font-weight: bold; border-radius: 5px; }
+        footer { text-align: center; padding: 20px; font-size: 14px; color: #888; border-top: 2px solid var(--android-green); }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1 onclick="showPage('main')">android<span style="color:var(--android-green)">market</span></h1>
+    <input type="text" id="search" placeholder="Поиск..." onkeyup="renderApps()" style="padding: 10px; flex-grow: 1; border-radius: 5px; border: none;">
+    <span class="menu-btn" onclick="toggleDropdown()">☰</span>
+    <span class="menu-btn" onclick="showPage('settings')">⚙️</span>
+</header>
+
+<div class="banner" onclick="window.open('https://t.me/glebssonchikbyr', '_blank')">Вступай в мой Telegram: t.me/glebssonchikbyr</div>
+
+<div id="dropdown-menu" class="dropdown">
+    <div onclick="filterCat('Все')">📦 Все</div>
+    <div onclick="filterCat('Приложения')">📱 Приложения</div>
+    <div onclick="filterCat('Игры')">🎮 Игры</div>
+    <div onclick="filterCat('Симуляторы')">🚗 Симуляторы</div>
+    <div onclick="filterCat('Соцсети')">💬 Соцсети</div>
+    <div onclick="filterCat('Эмуляторы')">🕹️ Эмуляторы</div>
+</div>
+
+<main class="market-container">
+    <div id="main-page" class="page" style="display:block;"><div id="dynamic-list" class="grid"></div></div>
+    
+    <div id="settings-page" class="page">
+        <h2>Настройки</h2>
+        <div class="card" onclick="changeTheme('gingerbread')">Тема: Gingerbread</div>
+        <div class="card" onclick="changeTheme('holo')">Тема: Holo UI</div>
+        <div class="card" onclick="showPage('rules')">Правила безопасности</div>
+        <div class="card" onclick="showPage('about')">О версии</div>
+        <div class="card" onclick="showPage('code')">Открытое ПО</div>
+        <button onclick="showPage('main')">Назад</button>
+    </div>
+
+    <div id="rules-page" class="page"><h2>Безопасность</h2><p>Устанавливайте приложения на свой страх и риск.</p><button onclick="showPage('settings')">Назад</button></div>
+    <div id="about-page" class="page"><h2>О версии</h2><p>Версия: 1.9 (Final PWA)</p><p>Разработчик: <b>Глеб</b></p><p>Помощники: Ваня, Артем, Рома.</p><button onclick="showPage('settings')">Назад</button></div>
+    <div id="code-page" class="page">
+        <h2>Открытое ПО</h2>
+        <textarea id="code-area" readonly></textarea><br><br>
+        <button onclick="showPage('settings')">Назад</button>
+    </div>
+</main>
+
+<footer>© 2026 Android Market. Все права защищены.</footer>
+
+<script>
+    const ALL_APPS = [
+        { title: "Google Maps", dev: "Google", cat: "Приложения", req: 4.0, url: "https://drive.google.com/file/d/1Kd1TBHa99l7_qcjZ8r7yUS5BLGrMee9f/view?usp=sharing" },
+        { title: "TikTok Lite", dev: "TikTok", cat: "Соцсети", req: 4.4, url: "https://drive.google.com/file/d/1XJTvFZJc_Q0Pukd85mcRhoFJrc2Zburt/view?usp=sharing" },
+        { title: "Яндекс Браузер", dev: "Yandex", cat: "Приложения", req: 4.2, url: "https://drive.google.com/file/d/1jPII-bNMfvXlDwW8LzRc-NuXacAGACYZ/view?usp=sharing" },
+        { title: "4PDA", dev: "4PDA", cat: "Приложения", req: 4.0, url: "https://drive.google.com/file/d/1XYzEi9nApeC0yX0EQjhyO4M7IrTgG1Mi/view?usp=drive_link" },
+        { title: "Google Chrome", dev: "Google", cat: "Приложения", req: 4.4, url: "https://drive.google.com/file/d/1E42luN1WOazdl16Ly_0v73N9mnpX74DR/view?usp=drive_link" },
+        { title: "Angry Birds", dev: "Rovio", cat: "Игры", req: 2.3, url: "https://drive.google.com/file/d/1WcSLLHGT5cs_0bp_jihQV1ZCNUyE-bUH/view?usp=drive_link" },
+        { title: "Flappy Bird", dev: ".GEARS", cat: "Игры", req: 3.0, url: "https://drive.google.com/file/d/1cBtzO4ftRV_rIClrcigeymCYdexTN-YE/view?usp=sharing" },
+        { title: "Cut the Rope", dev: "ZeptoLab", cat: "Игры", req: 2.3, url: "https://drive.google.com/file/d/1gtLPyqrvUyQiCI5StPWb2UlB29ZP71Kw/view?usp=sharing" },
+        { title: "Asphalt Nitro 2", dev: "Gameloft", cat: "Симуляторы", req: 4.1, url: "https://drive.google.com/file/d/1v0W2XWGqTt-LNDZfe7YuTGUQ8dhPjtDZ/view?usp=sharing" }
+    ];
+
+    let currentCat = 'Все';
+
+    function renderApps() {
+        const list = document.getElementById('dynamic-list');
+        const query = document.getElementById('search').value.toLowerCase();
+        list.innerHTML = "";
+        ALL_APPS.filter(a => (currentCat === 'Все' || a.cat === currentCat) && a.title.toLowerCase().includes(query)).forEach(app => {
+            list.innerHTML += `<div class="card">
+                <div style="font-weight:bold; font-size:20px">${app.title}</div>
+                <div style="font-size:14px; color:#aaa; margin: 10px 0;">${app.dev} • Требует: ${app.req}+</div>
+                <a href="${app.url}" class="download-btn" target="_blank">Установить</a>
+            </div>`;
+        });
+    }
+
+    function toggleDropdown() { const d = document.getElementById('dropdown-menu'); d.style.display = (d.style.display === 'block') ? 'none' : 'block'; }
+    function filterCat(cat) { currentCat = cat; toggleDropdown(); renderApps(); }
+    function showPage(id) { 
+        document.querySelectorAll('.page').forEach(p => p.style.display = 'none'); 
+        document.getElementById(id + '-page').style.display = 'block';
+        if(id === 'code') document.getElementById('code-area').value = document.documentElement.outerHTML;
+    }
+    function changeTheme(t) { document.documentElement.setAttribute('data-theme', t); }
+
+    renderApps();
+</script>
+</body>
+</html>
