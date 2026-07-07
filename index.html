@@ -20,14 +20,16 @@
         
         .market-container { max-width: 900px; margin: auto; padding: 20px; flex: 1; width: 100%; box-sizing: border-box; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-        .card { background: var(--card-bg); border: 2px solid var(--card-border); padding: 25px; border-radius: 15px; transition: 0.3s; }
+        .card { background: var(--card-bg); border: 2px solid var(--card-border); padding: 25px; border-radius: 15px; transition: 0.3s; display: flex; flex-direction: column; }
         .card:hover { border-color: var(--android-green); box-shadow: 0 0 15px var(--android-green); }
+        .app-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .app-icon { width: 40px; height: 40px; background: white; border-radius: 8px; padding: 2px; }
         
         .page { display: none; padding: 20px; }
         textarea { width: 100%; height: 200px; background: #fff; color: #000; font-family: monospace; }
         .menu-btn { cursor: pointer; font-size: 24px; color: var(--android-green); margin-left: auto; }
         .dropdown { display: none; position: absolute; right: 10px; top: 60px; background: #333; border: 1px solid #555; padding: 10px; z-index: 100; width: 180px; }
-        .download-btn { background: var(--android-green); padding: 12px; text-decoration: none; color: #fff; border-radius: 6px; display: block; text-align: center; margin-top: 15px; font-weight: bold; }
+        .download-btn { background: var(--android-green); padding: 12px; text-decoration: none; color: #fff; border-radius: 6px; display: block; text-align: center; margin-top: auto; font-weight: bold; }
         button { padding: 12px 25px; background: var(--android-green); border: none; cursor: pointer; color: white; font-weight: bold; border-radius: 5px; }
         footer { text-align: center; padding: 20px; font-size: 14px; color: #888; border-top: 2px solid var(--android-green); }
     </style>
@@ -81,22 +83,23 @@
 
 <script>
     const ALL_APPS = [
-        { title: "Google Maps", dev: "Google", cat: "Приложения", req: 4.0, url: "https://drive.google.com/file/d/1Kd1TBHa99l7_qcjZ8r7yUS5BLGrMee9f/view?usp=sharing" },
-        { title: "TikTok Lite", dev: "TikTok", cat: "Соцсети", req: 4.4, url: "https://drive.google.com/file/d/1XJTvFZJc_Q0Pukd85mcRhoFJrc2Zburt/view?usp=sharing" },
-        { title: "Яндекс Браузер", dev: "Yandex", cat: "Приложения", req: 4.2, url: "https://drive.google.com/file/d/1jPII-bNMfvXlDwW8LzRc-NuXacAGACYZ/view?usp=sharing" },
-        { title: "4PDA", dev: "4PDA", cat: "Приложения", req: 4.0, url: "https://drive.google.com/file/d/1XYzEi9nApeC0yX0EQjhyO4M7IrTgG1Mi/view?usp=drive_link" },
-        { title: "Google Chrome", dev: "Google", cat: "Приложения", req: 4.4, url: "https://drive.google.com/file/d/1E42luN1WOazdl16Ly_0v73N9mnpX74DR/view?usp=drive_link" },
-        { title: "Angry Birds", dev: "Rovio", cat: "Игры", req: 2.3, url: "https://drive.google.com/file/d/1WcSLLHGT5cs_0bp_jihQV1ZCNUyE-bUH/view?usp=drive_link" },
-        { title: "Flappy Bird", dev: ".GEARS", cat: "Игры", req: 3.0, url: "https://drive.google.com/file/d/1cBtzO4ftRV_rIClrcigeymCYdexTN-YE/view?usp=sharing" },
-        { title: "Cut the Rope", dev: "ZeptoLab", cat: "Игры", req: 2.3, url: "https://drive.google.com/file/d/1gtLPyqrvUyQiCI5StPWb2UlB29ZP71Kw/view?usp=sharing" },
-        { title: "Asphalt Nitro 2", dev: "Gameloft", cat: "Симуляторы", req: 4.1, url: "https://drive.google.com/file/d/1v0W2XWGqTt-LNDZfe7YuTGUQ8dhPjtDZ/view?usp=sharing" },
-        { title: "AIDA64", dev: "FinalWire", cat: "Приложения", req: 3.0, url: "https://drive.google.com/file/d/1WACAdj1YxH0rxGQrMyZ9jn6aWBgGQFhc/view?usp=sharing" },
-        { title: "Doodle Jump", dev: "Lima Sky", cat: "Игры", req: 2.1, url: "https://drive.google.com/file/d/1aiiEUMtyNuL9aJ6h9dpRmwGewx-D7K-I/view?usp=sharing" },
-        { title: "Gismeteo", dev: "Gismeteo", cat: "Приложения", req: 4.0, url: "https://drive.google.com/file/d/1tN2YxBbkatgG-HQTIXVPuh1bIf-wVuCZ/view?usp=sharing" },
-        { title: "NotPipe", dev: "Team NewPipe", cat: "Приложения", req: 4.4, url: "https://drive.google.com/file/d/1BFRh-M6CVv1Xz8Jc13KJSqMDV3v9NTK1/view?usp=sharing" },
-        { title: "Plants vs Zombies", dev: "PopCap", cat: "Игры", req: 2.3, url: "https://drive.google.com/file/d/1Kd5_5BD53PjiB87E9vk3MqXdeMpBLQr9/view?usp=sharing" },
-        { title: "Fruit Ninja", dev: "Halfbrick", cat: "Игры", req: 2.3, url: "https://drive.google.com/file/d/1ufTmkKxXrdXncdRPdJuWH2j8A6uyGy4d/view?usp=sharing" },
-        { title: "Opera Classic", dev: "Opera", cat: "Приложения", req: 2.3, url: "https://drive.google.com/file/d/18VgtkNmJahBI864_W3Ncva110HGnZv9q/view?usp=sharing" }
+        { title: "Google Maps", dev: "Google", cat: "Приложения", req: 4.0, url: "https://drive.google.com/file/d/1Kd1TBHa99l7_qcjZ8r7yUS5BLGrMee9f/view?usp=sharing", icon: "" },
+        { title: "TikTok Lite", dev: "TikTok", cat: "Соцсети", req: 4.4, url: "https://drive.google.com/file/d/1XJTvFZJc_Q0Pukd85mcRhoFJrc2Zburt/view?usp=sharing", icon: "" },
+        { title: "Яндекс Браузер", dev: "Yandex", cat: "Приложения", req: 4.2, url: "https://drive.google.com/file/d/1jPII-bNMfvXlDwW8LzRc-NuXacAGACYZ/view?usp=sharing", icon: "https://upload.wikimedia.org/wikipedia/commons/e/e0/Yandex_Browser_logo.svg" },
+        { title: "4PDA", dev: "4PDA", cat: "Приложения", req: 4.0, url: "https://drive.google.com/file/d/1XYzEi9nApeC0yX0EQjhyO4M7IrTgG1Mi/view?usp=drive_link", icon: "" },
+        { title: "Google Chrome", dev: "Google", cat: "Приложения", req: 4.4, url: "https://drive.google.com/file/d/1E42luN1WOazdl16Ly_0v73N9mnpX74DR/view?usp=drive_link", icon: "" },
+        { title: "Angry Birds", dev: "Rovio", cat: "Игры", req: 2.3, url: "https://drive.google.com/file/d/1WcSLLHGT5cs_0bp_jihQV1ZCNUyE-bUH/view?usp=drive_link", icon: "" },
+        { title: "Flappy Bird", dev: ".GEARS", cat: "Игры", req: 3.0, url: "https://drive.google.com/file/d/1cBtzO4ftRV_rIClrcigeymCYdexTN-YE/view?usp=sharing", icon: "" },
+        { title: "Cut the Rope", dev: "ZeptoLab", cat: "Игры", req: 2.3, url: "https://drive.google.com/file/d/1gtLPyqrvUyQiCI5StPWb2UlB29ZP71Kw/view?usp=sharing", icon: "" },
+        { title: "Asphalt Nitro 2", dev: "Gameloft", cat: "Симуляторы", req: 4.1, url: "https://drive.google.com/file/d/1v0W2XWGqTt-LNDZfe7YuTGUQ8dhPjtDZ/view?usp=sharing", icon: "" },
+        { title: "AIDA64", dev: "FinalWire", cat: "Приложения", req: 3.0, url: "https://drive.google.com/file/d/1WACAdj1YxH0rxGQrMyZ9jn6aWBgGQFhc/view?usp=sharing", icon: "" },
+        { title: "Doodle Jump", dev: "Lima Sky", cat: "Игры", req: 2.1, url: "https://drive.google.com/file/d/1aiiEUMtyNuL9aJ6h9dpRmwGewx-D7K-I/view?usp=sharing", icon: "" },
+        { title: "Gismeteo", dev: "Gismeteo", cat: "Приложения", req: 4.0, url: "https://drive.google.com/file/d/1tN2YxBbkatgG-HQTIXVPuh1bIf-wVuCZ/view?usp=sharing", icon: "" },
+        { title: "NotPipe", dev: "Team NewPipe", cat: "Приложения", req: 4.4, url: "https://drive.google.com/file/d/1BFRh-M6CVv1Xz8Jc13KJSqMDV3v9NTK1/view?usp=sharing", icon: "" },
+        { title: "Plants vs Zombies", dev: "PopCap", cat: "Игры", req: 2.3, url: "https://drive.google.com/file/d/1Kd5_5BD53PjiB87E9vk3MqXdeMpBLQr9/view?usp=sharing", icon: "" },
+        { title: "Fruit Ninja", dev: "Halfbrick", cat: "Игры", req: 2.3, url: "https://drive.google.com/file/d/1ufTmkKxXrdXncdRPdJuWH2j8A6uyGy4d/view?usp=sharing", icon: "" },
+        { title: "Opera Classic", dev: "Opera", cat: "Приложения", req: 2.3, url: "https://drive.google.com/file/d/18VgtkNmJahBI864_W3Ncva110HGnZv9q/view?usp=sharing", icon: "" },
+        { title: "Talking Bird", dev: "Outfit7", cat: "Игры", req: 2.3, url: "https://drive.google.com/file/d/1P9hMR0Trb3qTshUgdITnAUxr_6BxFXiD/view?usp=sharing", icon: "" }
     ];
 
     let currentCat = 'Все';
@@ -107,8 +110,13 @@
         list.innerHTML = "";
         ALL_APPS.filter(a => (currentCat === 'Все' || a.cat === currentCat) && a.title.toLowerCase().includes(query)).forEach(app => {
             list.innerHTML += `<div class="card">
-                <div style="font-weight:bold; font-size:20px">${app.title}</div>
-                <div style="font-size:14px; color:#aaa; margin: 10px 0;">${app.dev} • Требует: ${app.req}+</div>
+                <div class="app-header">
+                    ${app.icon ? `<img src="${app.icon}" class="app-icon" alt="icon">` : ''}
+                    <div>
+                        <div style="font-weight:bold; font-size:20px">${app.title}</div>
+                        <div style="font-size:14px; color:#aaa;">${app.dev} • Требует: ${app.req}+</div>
+                    </div>
+                </div>
                 <a href="${app.url}" class="download-btn" target="_blank">Установить</a>
             </div>`;
         });
