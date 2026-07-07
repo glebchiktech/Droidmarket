@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Android Market v1.9 (PWA Final)</title>
+    <title>Android Market 1.0</title>
     <!-- Мета для PWA -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -13,7 +13,8 @@
         body { font-family: sans-serif; background-color: var(--market-bg); color: var(--text-main); margin: 0; display: flex; flex-direction: column; min-height: 100vh; }
         
         header { position: sticky; top: 0; background: #000; padding: 15px; border-bottom: 3px solid var(--android-green); display: flex; align-items: center; gap: 10px; z-index: 1000; }
-        header h1 { color: var(--h-text); margin: 0; font-size: 20px; cursor: pointer; }
+        header h1 { color: var(--h-text); margin: 0; font-size: 20px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+        header img { height: 24px; }
         
         .banner { background: var(--android-green); color: white; padding: 10px; text-align: center; cursor: pointer; font-weight: bold; }
         
@@ -34,7 +35,10 @@
 <body>
 
 <header>
-    <h1 onclick="showPage('main')">android<span style="color:var(--android-green)">market</span></h1>
+    <h1 onclick="showPage('main')">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/d/d7/Android_robot.svg" alt="Android">
+        android<span style="color:var(--android-green)">market</span> 1.0
+    </h1>
     <input type="text" id="search" placeholder="Поиск..." onkeyup="renderApps()" style="padding: 10px; flex-grow: 1; border-radius: 5px; border: none;">
     <span class="menu-btn" onclick="toggleDropdown()">☰</span>
     <span class="menu-btn" onclick="showPage('settings')">⚙️</span>
@@ -65,7 +69,7 @@
     </div>
 
     <div id="rules-page" class="page"><h2>Безопасность</h2><p>Устанавливайте приложения на свой страх и риск.</p><button onclick="showPage('settings')">Назад</button></div>
-    <div id="about-page" class="page"><h2>О версии</h2><p>Версия: 1.9 (Final PWA)</p><p>Разработчик: <b>Глеб</b></p><p>Помощники: Ваня, Артем, Рома.</p><button onclick="showPage('settings')">Назад</button></div>
+    <div id="about-page" class="page"><h2>О версии</h2><p>Версия: 1.0 (Final PWA)</p><p>Разработчик: <b>Глеб</b></p><p>Помощники: Ваня, Артем, Рома.</p><button onclick="showPage('settings')">Назад</button></div>
     <div id="code-page" class="page">
         <h2>Открытое ПО</h2>
         <textarea id="code-area" readonly></textarea><br><br>
