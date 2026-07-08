@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Android Market 1.0</title>
-    <!-- Мета для PWA -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <style>
@@ -17,20 +16,27 @@
         header img { height: 24px; }
         
         .banner { background: var(--android-green); color: white; padding: 10px; text-align: center; cursor: pointer; font-weight: bold; }
+        .slider-container { width: 100%; overflow: hidden; margin: 10px auto; max-width: 900px; border: 2px solid var(--android-green); border-radius: 10px; height: 50px; position: relative; }
+        .slider { display: flex; width: 200%; height: 100%; animation: slide 30s infinite; }
+        @keyframes slide { 0%, 45% { transform: translateX(0); } 50%, 95% { transform: translateX(-50%); } }
+        .featured-item { width: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; }
+        .featured-item:hover { background: #333; }
         
         .market-container { max-width: 900px; margin: auto; padding: 20px; flex: 1; width: 100%; box-sizing: border-box; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
         .card { background: var(--card-bg); border: 2px solid var(--card-border); padding: 25px; border-radius: 15px; transition: 0.3s; display: flex; flex-direction: column; }
         .card:hover { border-color: var(--android-green); box-shadow: 0 0 15px var(--android-green); }
-        .app-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-        .app-icon { width: 40px; height: 40px; background: white; border-radius: 8px; padding: 2px; }
+        .app-icon { width: 50px; height: 50px; border-radius: 8px; margin-bottom: 10px; }
         
         .page { display: none; padding: 20px; }
         textarea { width: 100%; height: 200px; background: #fff; color: #000; font-family: monospace; }
         .menu-btn { cursor: pointer; font-size: 24px; color: var(--android-green); margin-left: auto; }
         .dropdown { display: none; position: absolute; right: 10px; top: 60px; background: #333; border: 1px solid #555; padding: 10px; z-index: 100; width: 180px; }
         .download-btn { background: var(--android-green); padding: 12px; text-decoration: none; color: #fff; border-radius: 6px; display: block; text-align: center; margin-top: auto; font-weight: bold; }
-        button { padding: 12px 25px; background: var(--android-green); border: none; cursor: pointer; color: white; font-weight: bold; border-radius: 5px; }
+        button { padding: 12px 25px; background: var(--android-green); border: none; cursor: pointer; color: white; font-weight: bold; border-radius: 5px; width: 100%; margin-top: 5px; }
+        
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-content { background: #222; padding: 20px; border-radius: 10px; width: 320px; color: white; text-align: center; }
         footer { text-align: center; padding: 20px; font-size: 14px; color: #888; border-top: 2px solid var(--android-green); }
     </style>
 </head>
@@ -42,11 +48,30 @@
         android<span style="color:var(--android-green)">market</span> 1.0
     </h1>
     <input type="text" id="search" placeholder="Поиск..." onkeyup="renderApps()" style="padding: 10px; flex-grow: 1; border-radius: 5px; border: none;">
+    <div id="user-btn" onclick="openModal('auth-modal')" style="cursor:pointer; margin-left:10px;">👤 Вход</div>
     <span class="menu-btn" onclick="toggleDropdown()">☰</span>
     <span class="menu-btn" onclick="showPage('settings')">⚙️</span>
 </header>
 
 <div class="banner" onclick="window.open('https://t.me/glebssonchikbyr', '_blank')">Вступай в мой Telegram: t.me/glebssonchikbyr</div>
+
+<div id="auth-modal" class="modal">
+    <div class="modal-content">
+        <h2 id="modal-title-text">Авторизация</h2>
+        <input type="text" id="nick" placeholder="Никнейм">
+        <input type="password" id="pass" placeholder="Пароль (мин 8 символов)">
+        <button id="auth-btn" onclick="login()">Войти</button>
+        <button style="background:none; border:1px solid #555" onclick="toggleAuthMode()">Нет аккаунта? Зарегистрироваться</button>
+        <button style="background:red" onclick="closeModal()">Закрыть</button>
+    </div>
+</div>
+
+<div class="slider-container">
+    <div class="slider">
+        <div class="featured-item" onclick="showCategoryContent('app', 'Лучшие приложения')">⭐ Лучшие приложения</div>
+        <div class="featured-item" onclick="showCategoryContent('game', 'Лучшие игры')">🎮 Лучшие игры</div>
+    </div>
+</div>
 
 <div id="dropdown-menu" class="dropdown">
     <div onclick="filterCat('Все')">📦 Все</div>
@@ -60,8 +85,29 @@
 <main class="market-container">
     <div id="main-page" class="page" style="display:block;"><div id="dynamic-list" class="grid"></div></div>
     
+    <div id="modal-view" class="page">
+        <h2 id="modal-title"></h2>
+        <div id="modal-content" class="grid"></div>
+        <br><button onclick="showPage('main')">Назад</button>
+    </div>
+    
     <div id="settings-page" class="page">
         <h2>Настройки</h2>
+        <div id="profile-edit" style="display:none; background:#252525; padding:15px; border-radius:10px; margin-bottom:10px;">
+            <h3>Профиль</h3>
+            <input type="text" id="edit-nick" placeholder="Новый никнейм">
+            <input type="text" id="edit-icon" placeholder="Ссылка на иконку профиля">
+            <button onclick="updateProfile()">Сохранить профиль</button>
+            <button style="background:orange" onclick="logout()">Выйти</button>
+        </div>
+        <div id="add-app-section" style="display:none; background:#252525; padding:15px; border-radius:10px; margin-bottom:10px;">
+            <h3>Добавить приложение</h3>
+            <input type="text" id="app-name" placeholder="Название">
+            <input type="text" id="app-desc" placeholder="Описание/Разработчик">
+            <input type="text" id="app-url" placeholder="Ссылка на Google Drive">
+            <input type="text" id="app-icon" placeholder="Ссылка на иконку (URL)">
+            <button onclick="addApp()">Добавить в магазин</button>
+        </div>
         <div class="card" onclick="changeTheme('gingerbread')">Тема: Gingerbread</div>
         <div class="card" onclick="changeTheme('holo')">Тема: Holo UI</div>
         <div class="card" onclick="showPage('rules')">Правила безопасности</div>
@@ -71,38 +117,87 @@
     </div>
 
     <div id="rules-page" class="page"><h2>Безопасность</h2><p>Устанавливайте приложения на свой страх и риск.</p><button onclick="showPage('settings')">Назад</button></div>
-    <div id="about-page" class="page"><h2>О версии</h2><p>Версия: 1.0 (Final PWA)</p><p>Разработчик: <b>Глеб</b></p><p>Помощники: Ваня, Артем, Рома.</p><button onclick="showPage('settings')">Назад</button></div>
-    <div id="code-page" class="page">
-        <h2>Открытое ПО</h2>
-        <textarea id="code-area" readonly></textarea><br><br>
+    <div id="about-page" class="page">
+        <h2>О версии</h2>
+        <p>Версия: 1.0 (Final PWA)</p>
+        <p>Разработчик: <b>Глеб</b></p>
+        <p>Помощники: <b>Ваня, Артем, Рома</b></p>
         <button onclick="showPage('settings')">Назад</button>
     </div>
+    <div id="code-page" class="page"><h2>Открытое ПО</h2><textarea id="code-area" readonly></textarea><br><button onclick="showPage('settings')">Назад</button></div>
 </main>
 
 <footer>© 2026 Android Market. Все права защищены.</footer>
 
 <script>
-    const ALL_APPS = [
-        { title: "Google Maps", dev: "Google", cat: "Приложения", req: 4.0, url: "https://drive.google.com/file/d/1Kd1TBHa99l7_qcjZ8r7yUS5BLGrMee9f/view?usp=sharing", icon: "" },
-        { title: "TikTok Lite", dev: "TikTok", cat: "Соцсети", req: 4.4, url: "https://drive.google.com/file/d/1XJTvFZJc_Q0Pukd85mcRhoFJrc2Zburt/view?usp=sharing", icon: "" },
-        { title: "Яндекс Браузер", dev: "Yandex", cat: "Приложения", req: 4.2, url: "https://drive.google.com/file/d/1jPII-bNMfvXlDwW8LzRc-NuXacAGACYZ/view?usp=sharing", icon: "https://upload.wikimedia.org/wikipedia/commons/e/e0/Yandex_Browser_logo.svg" },
-        { title: "4PDA", dev: "4PDA", cat: "Приложения", req: 4.0, url: "https://drive.google.com/file/d/1XYzEi9nApeC0yX0EQjhyO4M7IrTgG1Mi/view?usp=drive_link", icon: "" },
-        { title: "Google Chrome", dev: "Google", cat: "Приложения", req: 4.4, url: "https://drive.google.com/file/d/1E42luN1WOazdl16Ly_0v73N9mnpX74DR/view?usp=drive_link", icon: "" },
-        { title: "Angry Birds", dev: "Rovio", cat: "Игры", req: 2.3, url: "https://drive.google.com/file/d/1WcSLLHGT5cs_0bp_jihQV1ZCNUyE-bUH/view?usp=drive_link", icon: "" },
-        { title: "Flappy Bird", dev: ".GEARS", cat: "Игры", req: 3.0, url: "https://drive.google.com/file/d/1cBtzO4ftRV_rIClrcigeymCYdexTN-YE/view?usp=sharing", icon: "" },
-        { title: "Cut the Rope", dev: "ZeptoLab", cat: "Игры", req: 2.3, url: "https://drive.google.com/file/d/1gtLPyqrvUyQiCI5StPWb2UlB29ZP71Kw/view?usp=sharing", icon: "" },
-        { title: "Asphalt Nitro 2", dev: "Gameloft", cat: "Симуляторы", req: 4.1, url: "https://drive.google.com/file/d/1v0W2XWGqTt-LNDZfe7YuTGUQ8dhPjtDZ/view?usp=sharing", icon: "" },
-        { title: "AIDA64", dev: "FinalWire", cat: "Приложения", req: 3.0, url: "https://drive.google.com/file/d/1WACAdj1YxH0rxGQrMyZ9jn6aWBgGQFhc/view?usp=sharing", icon: "" },
-        { title: "Doodle Jump", dev: "Lima Sky", cat: "Игры", req: 2.1, url: "https://drive.google.com/file/d/1aiiEUMtyNuL9aJ6h9dpRmwGewx-D7K-I/view?usp=sharing", icon: "" },
-        { title: "Gismeteo", dev: "Gismeteo", cat: "Приложения", req: 4.0, url: "https://drive.google.com/file/d/1tN2YxBbkatgG-HQTIXVPuh1bIf-wVuCZ/view?usp=sharing", icon: "" },
-        { title: "NotPipe", dev: "Team NewPipe", cat: "Приложения", req: 4.4, url: "https://drive.google.com/file/d/1BFRh-M6CVv1Xz8Jc13KJSqMDV3v9NTK1/view?usp=sharing", icon: "" },
-        { title: "Plants vs Zombies", dev: "PopCap", cat: "Игры", req: 2.3, url: "https://drive.google.com/file/d/1Kd5_5BD53PjiB87E9vk3MqXdeMpBLQr9/view?usp=sharing", icon: "" },
-        { title: "Fruit Ninja", dev: "Halfbrick", cat: "Игры", req: 2.3, url: "https://drive.google.com/file/d/1ufTmkKxXrdXncdRPdJuWH2j8A6uyGy4d/view?usp=sharing", icon: "" },
-        { title: "Opera Classic", dev: "Opera", cat: "Приложения", req: 2.3, url: "https://drive.google.com/file/d/18VgtkNmJahBI864_W3Ncva110HGnZv9q/view?usp=sharing", icon: "" },
-        { title: "Talking Bird", dev: "Outfit7", cat: "Игры", req: 2.3, url: "https://drive.google.com/file/d/1P9hMR0Trb3qTshUgdITnAUxr_6BxFXiD/view?usp=sharing", icon: "" }
+    let ALL_APPS = [
+        { title: "Google Maps", dev: "Google", cat: "Приложения", url: "https://drive.google.com/file/d/1Kd1TBHa99l7_qcjZ8r7yUS5BLGrMee9f/view?usp=sharing", icon: "" },
+        { title: "TikTok Lite", dev: "TikTok", cat: "Соцсети", url: "https://drive.google.com/file/d/1XJTvFZJc_Q0Pukd85mcRhoFJrc2Zburt/view?usp=sharing", icon: "" },
+        { title: "Яндекс Браузер", dev: "Yandex", cat: "Приложения", url: "https://drive.google.com/file/d/1jPII-bNMfvXlDwW8LzRc-NuXacAGACYZ/view?usp=sharing", icon: "" },
+        { title: "4PDA", dev: "4PDA", cat: "Приложения", url: "https://drive.google.com/file/d/1XYzEi9nApeC0yX0EQjhyO4M7IrTgG1Mi/view?usp=drive_link", icon: "" },
+        { title: "Google Chrome", dev: "Google", cat: "Приложения", url: "https://drive.google.com/file/d/1E42luN1WOazdl16Ly_0v73N9mnpX74DR/view?usp=drive_link", icon: "" },
+        { title: "Angry Birds", dev: "Rovio", cat: "Игры", url: "https://drive.google.com/file/d/1WcSLLHGT5cs_0bp_jihQV1ZCNUyE-bUH/view?usp=drive_link", icon: "" },
+        { title: "Flappy Bird", dev: ".GEARS", cat: "Игры", url: "https://drive.google.com/file/d/1cBtzO4ftRV_rIClrcigeymCYdexTN-YE/view?usp=sharing", icon: "" },
+        { title: "Cut the Rope", dev: "ZeptoLab", cat: "Игры", url: "https://drive.google.com/file/d/1gtLPyqrvUyQiCI5StPWb2UlB29ZP71Kw/view?usp=sharing", icon: "" },
+        { title: "Asphalt Nitro 2", dev: "Gameloft", cat: "Симуляторы", url: "https://drive.google.com/file/d/1v0W2XWGqTt-LNDZfe7YuTGUQ8dhPjtDZ/view?usp=sharing", icon: "" },
+        { title: "AIDA64", dev: "FinalWire", cat: "Приложения", url: "https://drive.google.com/file/d/1WACAdj1YxH0rxGQrMyZ9jn6aWBgGQFhc/view?usp=sharing", icon: "" },
+        { title: "Doodle Jump", dev: "Lima Sky", cat: "Игры", url: "https://drive.google.com/file/d/1aiiEUMtyNuL9aJ6h9dpRmwGewx-D7K-I/view?usp=sharing", icon: "" },
+        { title: "Gismeteo", dev: "Gismeteo", cat: "Приложения", url: "https://drive.google.com/file/d/1tN2YxBbkatgG-HQTIXVPuh1bIf-wVuCZ/view?usp=sharing", icon: "" },
+        { title: "NotPipe", dev: "Team NewPipe", cat: "Приложения", url: "https://drive.google.com/file/d/1BFRh-M6CVv1Xz8Jc13KJSqMDV3v9NTK1/view?usp=sharing", icon: "" },
+        { title: "Plants vs Zombies", dev: "PopCap", cat: "Игры", url: "https://drive.google.com/file/d/1Kd5_5BD53PjiB87E9vk3MqXdeMpBLQr9/view?usp=sharing", icon: "" },
+        { title: "Fruit Ninja", dev: "Halfbrick", cat: "Игры", url: "https://drive.google.com/file/d/1ufTmkKxXrdXncdRPdJuWH2j8A6uyGy4d/view?usp=sharing", icon: "" },
+        { title: "Opera Classic", dev: "Opera", cat: "Приложения", url: "https://drive.google.com/file/d/18VgtkNmJahBI864_W3Ncva110HGnZv9q/view?usp=sharing", icon: "" },
+        { title: "Talking Bird", dev: "Outfit7", cat: "Игры", url: "https://drive.google.com/file/d/1P9hMR0Trb3qTshUgdITnAUxr_6BxFXiD/view?usp=sharing", icon: "" }
     ];
 
+    let currentUser = null;
+    let isLoginMode = true;
     let currentCat = 'Все';
+
+    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeModal() { document.getElementById('auth-modal').style.display = 'none'; }
+    
+    function toggleAuthMode() {
+        isLoginMode = !isLoginMode;
+        document.getElementById('modal-title-text').innerText = isLoginMode ? 'Авторизация' : 'Регистрация';
+        document.getElementById('auth-btn').innerText = isLoginMode ? 'Войти' : 'Зарегистрироваться';
+    }
+
+    function toggleDropdown() { const d = document.getElementById('dropdown-menu'); d.style.display = (d.style.display === 'block') ? 'none' : 'block'; }
+    
+    function login() {
+        const nick = document.getElementById('nick').value;
+        if(nick && document.getElementById('pass').value.length >= 8) {
+            currentUser = { nick, icon: '👤' };
+            document.getElementById('user-btn').innerHTML = currentUser.icon + ' ' + nick;
+            document.getElementById('profile-edit').style.display = 'block';
+            document.getElementById('add-app-section').style.display = 'block';
+            closeModal();
+            alert(isLoginMode ? 'Успешный вход!' : 'Регистрация завершена!');
+        } else alert('Ник и пароль (мин 8 символов)!');
+    }
+
+    function logout() {
+        currentUser = null;
+        document.getElementById('user-btn').innerHTML = '👤 Вход';
+        showPage('main');
+    }
+
+    function updateProfile() {
+        currentUser.nick = document.getElementById('edit-nick').value || currentUser.nick;
+        document.getElementById('user-btn').innerHTML = currentUser.icon + ' ' + currentUser.nick;
+    }
+
+    function addApp() {
+        ALL_APPS.push({ 
+            title: document.getElementById('app-name').value, 
+            dev: document.getElementById('app-desc').value, 
+            url: document.getElementById('app-url').value, 
+            icon: document.getElementById('app-icon').value,
+            cat: 'Приложения' 
+        });
+        renderApps();
+    }
 
     function renderApps() {
         const list = document.getElementById('dynamic-list');
@@ -110,23 +205,28 @@
         list.innerHTML = "";
         ALL_APPS.filter(a => (currentCat === 'Все' || a.cat === currentCat) && a.title.toLowerCase().includes(query)).forEach(app => {
             list.innerHTML += `<div class="card">
-                <div class="app-header">
-                    ${app.icon ? `<img src="${app.icon}" class="app-icon" alt="icon">` : ''}
-                    <div>
-                        <div style="font-weight:bold; font-size:20px">${app.title}</div>
-                        <div style="font-size:14px; color:#aaa;">${app.dev} • Требует: ${app.req}+</div>
-                    </div>
-                </div>
+                ${app.icon ? `<img src="${app.icon}" class="app-icon">` : ''}
+                <h3>${app.title}</h3><p>${app.dev}</p>
                 <a href="${app.url}" class="download-btn" target="_blank">Установить</a>
             </div>`;
         });
     }
 
-    function toggleDropdown() { const d = document.getElementById('dropdown-menu'); d.style.display = (d.style.display === 'block') ? 'none' : 'block'; }
-    function filterCat(cat) { currentCat = cat; toggleDropdown(); renderApps(); }
+    function showCategoryContent(type, title) {
+        document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+        document.getElementById('modal-view').style.display = 'block';
+        document.getElementById('modal-title').innerText = title;
+        const content = document.getElementById('modal-content');
+        content.innerHTML = "";
+        const filtered = (type === 'app') ? ALL_APPS.filter(a => a.cat === 'Приложения' || a.cat === 'Соцсети') : ALL_APPS.filter(a => a.cat === 'Игры' || a.cat === 'Симуляторы');
+        filtered.forEach(app => content.innerHTML += `<div class="card">${app.icon ? `<img src="${app.icon}" class="app-icon">` : ''}<h3>${app.title}</h3><a href="${app.url}" class="download-btn" target="_blank">Установить</a></div>`);
+    }
+
+    function filterCat(cat) { currentCat = cat; toggleDropdown(); showPage('main'); renderApps(); }
     function showPage(id) { 
         document.querySelectorAll('.page').forEach(p => p.style.display = 'none'); 
-        document.getElementById(id + '-page').style.display = 'block';
+        const page = document.getElementById(id + '-page');
+        if(page) page.style.display = 'block';
         if(id === 'code') document.getElementById('code-area').value = document.documentElement.outerHTML;
     }
     function changeTheme(t) { document.documentElement.setAttribute('data-theme', t); }
@@ -135,3 +235,4 @@
 </script>
 </body>
 </html>
+```[cite: 3]
