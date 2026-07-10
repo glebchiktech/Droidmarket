@@ -26,7 +26,7 @@
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
         .card { background: var(--card-bg); border: 2px solid var(--card-border); padding: 25px; border-radius: 15px; transition: 0.3s; display: flex; flex-direction: column; }
         .card:hover { border-color: var(--android-green); box-shadow: 0 0 15px var(--android-green); }
-        .app-icon { width: 50px; height: 50px; border-radius: 8px; margin-bottom: 10px; }
+        .app-icon { width: 50px; height: 50px; border-radius: 8px; margin-bottom: 10px; object-fit: cover; object-position: center; }
         
         .page { display: none; padding: 20px; }
         textarea { width: 100%; height: 200px; background: #fff; color: #000; font-family: monospace; }
@@ -133,22 +133,24 @@
     let ALL_APPS = [
         { title: "Talking Santa", dev: "Outfit7", cat: "Игры", url: "https://drive.google.com/file/d/1j4fMu3uClH-UzySxs9DjNzLUWbz5MEyd/view?usp=drive_link", icon: "https://avatars.mds.yandex.net/i?id=113628f343f0285b8aa89c059d4b0b6d_l-5383459-images-thumbs&n=13" },
         { title: "Google Maps", dev: "Google", cat: "Приложения", url: "https://drive.google.com/file/d/1Kd1TBHa99l7_qcjZ8r7yUS5BLGrMee9f/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=86d86ae777eb0584d60c1ff34cac52761c94c7d2-5251072-images-thumbs&n=13" },
-        { title: "TikTok Lite", dev: "TikTok", cat: "Соцсети", url: "https://drive.google.com/file/d/1XJTvFZJc_Q0Pukd85mcRhoFJrc2Zburt/view?usp=sharing", icon: "" },
-        { title: "Яндекс Браузер", dev: "Yandex", cat: "Приложения", url: "https://drive.google.com/file/d/1jPII-bNMfvXlDwW8LzRc-NuXacAGACYZ/view?usp=sharing", icon: "" },
-        { title: "4PDA", dev: "4PDA", cat: "Приложения", url: "https://drive.google.com/file/d/1XYzEi9nApeC0yX0EQjhyO4M7IrTgG1Mi/view?usp=drive_link", icon: "" },
-        { title: "Google Chrome", dev: "Google", cat: "Приложения", url: "https://drive.google.com/file/d/1E42luN1WOazdl16Ly_0v73N9mnpX74DR/view?usp=drive_link", icon: "" },
-        { title: "Angry Birds", dev: "Rovio", cat: "Игры", url: "https://drive.google.com/file/d/1WcSLLHGT5cs_0bp_jihQV1ZCNUyE-bUH/view?usp=drive_link", icon: "" },
-        { title: "Flappy Bird", dev: ".GEARS", cat: "Игры", url: "https://drive.google.com/file/d/1cBtzO4ftRV_rIClrcigeymCYdexTN-YE/view?usp=sharing", icon: "" },
-        { title: "Cut the Rope", dev: "ZeptoLab", cat: "Игры", url: "https://drive.google.com/file/d/1gtLPyqrvUyQiCI5StPWb2UlB29ZP71Kw/view?usp=sharing", icon: "" },
-        { title: "Asphalt Nitro 2", dev: "Gameloft", cat: "Симуляторы", url: "https://drive.google.com/file/d/1v0W2XWGqTt-LNDZfe7YuTGUQ8dhPjtDZ/view?usp=sharing", icon: "" },
-        { title: "AIDA64", dev: "FinalWire", cat: "Приложения", url: "https://drive.google.com/file/d/1WACAdj1YxH0rxGQrMyZ9jn6aWBgGQFhc/view?usp=sharing", icon: "" },
-        { title: "Doodle Jump", dev: "Lima Sky", cat: "Игры", url: "https://drive.google.com/file/d/1aiiEUMtyNuL9aJ6h9dpRmwGewx-D7K-I/view?usp=sharing", icon: "" },
-        { title: "Gismeteo", dev: "Gismeteo", cat: "Приложения", url: "https://drive.google.com/file/d/1tN2YxBbkatgG-HQTIXVPuh1bIf-wVuCZ/view?usp=sharing", icon: "" },
-        { title: "NotPipe", dev: "Team NewPipe", cat: "Приложения", url: "https://drive.google.com/file/d/1BFRh-M6CVv1Xz8Jc13KJSqMDV3v9NTK1/view?usp=sharing", icon: "" },
-        { title: "Plants vs Zombies", dev: "PopCap", cat: "Игры", url: "https://drive.google.com/file/d/1Kd5_5BD53PjiB87E9vk3MqXdeMpBLQr9/view?usp=sharing", icon: "" },
-        { title: "Fruit Ninja", dev: "Halfbrick", cat: "Игры", url: "https://drive.google.com/file/d/1ufTmkKxXrdXncdRPdJuWH2j8A6uyGy4d/view?usp=sharing", icon: "" },
-        { title: "Opera Classic", dev: "Opera", cat: "Приложения", url: "https://drive.google.com/file/d/18VgtkNmJahBI864_W3Ncva110HGnZv9q/view?usp=sharing", icon: "" },
-        { title: "Talking Bird", dev: "Outfit7", cat: "Игры", url: "https://drive.google.com/file/d/1P9hMR0Trb3qTshUgdITnAUxr_6BxFXiD/view?usp=sharing", icon: "" }
+        { title: "TikTok Lite", dev: "TikTok", cat: "Соцсети", url: "https://drive.google.com/file/d/1XJTvFZJc_Q0Pukd85mcRhoFJrc2Zburt/view?usp=sharing", icon: "https://play-lh.googleusercontent.com/3IsKguab6RdO2U-jim9f5nO1aZZuo-V0o24W9ar0JFpM_0IwaXaM1mi_-RSP_1IHf7E_XC4UC_U8-g7s_pHWFOE=w600-h300-pc0xffffff-pd" },
+        { title: "Яндекс Браузер", dev: "Yandex", cat: "Приложения", url: "https://drive.google.com/file/d/1jPII-bNMfvXlDwW8LzRc-NuXacAGACYZ/view?usp=sharing", icon: "https://w7.pngwing.com/pngs/910/334/png-transparent-yandex-browser-web-browser-firefox-google-chrome-opera-google-plus-computer-program-sphere-internet.png" },
+        { title: "4PDA", dev: "4PDA", cat: "Приложения", url: "https://drive.google.com/file/d/1XYzEi9nApeC0yX0EQjhyO4M7IrTgG1Mi/view?usp=drive_link", icon: "https://cdnb.nashstore.ru/api/v1/media/ca961c9f075925b85a2405bf/original" },
+        { title: "Google Chrome", dev: "Google", cat: "Приложения", url: "https://drive.google.com/file/d/1E42luN1WOazdl16Ly_0v73N9mnpX74DR/view?usp=drive_link", icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Chrome_icon_%28September_2014%29.svg/500px-Google_Chrome_icon_%28September_2014%29.svg.png" },
+        { title: "Angry Birds", dev: "Rovio", cat: "Игры", url: "https://drive.google.com/file/d/1WcSLLHGT5cs_0bp_jihQV1ZCNUyE-bUH/view?usp=drive_link", icon: "https://i.pinimg.com/originals/9e/3d/8a/9e3d8a0e6e85c7c136bcdd39f2ce40c0.png" },
+        { title: "Flappy Bird", dev: ".GEARS", cat: "Игры", url: "https://drive.google.com/file/d/1cBtzO4ftRV_rIClrcigeymCYdexTN-YE/view?usp=sharing", icon: "https://static.wikia.nocookie.net/igromania/images/d/db/Flappy_Bird.jpeg/revision/latest?cb=20231126155241&path-prefix=ru" },
+        { title: "Cut the Rope", dev: "ZeptoLab", cat: "Игры", url: "https://drive.google.com/file/d/1gtLPyqrvUyQiCI5StPWb2UlB29ZP71Kw/view?usp=sharing", icon: "https://static.wikia.nocookie.net/flutterbutter/images/b/bd/Mzl.pyrbezag.png/revision/latest?cb=20140304105513" },
+        { title: "Asphalt Nitro 2", dev: "Gameloft", cat: "Симуляторы", url: "https://drive.google.com/file/d/1v0W2XWGqTt-LNDZfe7YuTGUQ8dhPjtDZ/view?usp=sharing", icon: "https://static.wikia.nocookie.net/asphalt/images/1/1d/AN2_logo_icon.jpeg/revision/latest/scale-to-width-down/1200?cb=20230201172528" },
+        { title: "AIDA64", dev: "FinalWire", cat: "Приложения", url: "https://drive.google.com/file/d/1WACAdj1YxH0rxGQrMyZ9jn6aWBgGQFhc/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=d3a0083ce38b93c2cea9e6648c088e4e_l-9271022-images-thumbs&n=13" },
+        { title: "Doodle Jump", dev: "Lima Sky", cat: "Игры", url: "https://drive.google.com/file/d/1aiiEUMtyNuL9aJ6h9dpRmwGewx-D7K-I/view?usp=sharing", icon: "https://i.pinimg.com/736x/be/df/ef/bedfef8d9a41c0ebd138efd429bfea61.jpg" },
+        { title: "Gismeteo", dev: "Gismeteo", cat: "Приложения", url: "https://drive.google.com/file/d/1tN2YxBbkatgG-HQTIXVPuh1bIf-wVuCZ/view?usp=sharing", icon: "https://store-images.microsoft.com/image/apps.60866.9007199266243152.f4cda388-d997-4f17-828f-fc40aa3fd02b.07f8a582-5c6f-4e45-b5f8-e4c0f5479375" },
+        { title: "NotPipe", dev: "Team NewPipe", cat: "Приложения", url: "https://drive.google.com/file/d/1BFRh-M6CVv1Xz8Jc13KJSqMDV3v9NTK1/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=25e37bfe80620e25c71323c4fa53c3bfbac01c08-5843498-images-thumbs&n=13" },
+        { title: "Plants vs Zombies", dev: "PopCap", cat: "Игры", url: "https://drive.google.com/file/d/1Kd5_5BD53PjiB87E9vk3MqXdeMpBLQr9/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=c92c9cf2a2876590857403ca3103f177_l-5676890-images-thumbs&n=13" },
+        { title: "Fruit Ninja", dev: "Halfbrick", cat: "Игры", url: "https://drive.google.com/file/d/1ufTmkKxXrdXncdRPdJuWH2j8A6uyGy4d/view?usp=sharing", icon: "https://i.pinimg.com/736x/4f/9d/19/4f9d191ec95ab0dd8aeaf24f80edeaaf.jpg" },
+        { title: "Opera Classic", dev: "Opera", cat: "Приложения", url: "https://drive.google.com/file/d/18VgtkNmJahBI864_W3Ncva110HGnZv9q/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=ee85e90edd8d73b6265193e1f697a1c2948e8ac3-12184902-images-thumbs&n=13" },
+        { title: "Talking Bird", dev: "Outfit7", cat: "Игры", url: "https://drive.google.com/file/d/1P9hMR0Trb3qTshUgdITnAUxr_6BxFXiD/view?usp=sharing", icon: "https://i.pinimg.com/736x/cb/20/0f/cb200f4f968f0d005dd201850a1fbfc1.jpg" },
+        { title: "Angry Birds Rio", dev: "Rovio", cat: "Игры", url: "https://drive.google.com/file/d/1YU4A_ls6IxhtyMP2IVCerCfAoGyy_E-T/view?usp=sharing", icon: "https://static.wikia.nocookie.net/listofdeaths/images/a/a8/Angry_Birds_Rio.webp/revision/latest?cb=20220818172137" },
+        { title: "Talking Harry", dev: "Outfit7", cat: "Игры", url: "https://drive.google.com/file/d/17KsXzHYZ1Qh5Zw-77F8nIZmqKmHEJHFZ/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=d1363b1693894ae7a0e7a005ecafd0ec_l-6251463-images-thumbs&n=13" }
     ];
 
     let currentUser = null;
