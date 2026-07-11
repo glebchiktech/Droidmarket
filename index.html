@@ -149,8 +149,12 @@
         { title: "Fruit Ninja", dev: "Halfbrick", cat: "Игры", url: "https://drive.google.com/file/d/1ufTmkKxXrdXncdRPdJuWH2j8A6uyGy4d/view?usp=sharing", icon: "https://i.pinimg.com/736x/4f/9d/19/4f9d191ec95ab0dd8aeaf24f80edeaaf.jpg" },
         { title: "Opera Classic", dev: "Opera", cat: "Приложения", url: "https://drive.google.com/file/d/18VgtkNmJahBI864_W3Ncva110HGnZv9q/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=ee85e90edd8d73b6265193e1f697a1c2948e8ac3-12184902-images-thumbs&n=13" },
         { title: "Talking Bird", dev: "Outfit7", cat: "Игры", url: "https://drive.google.com/file/d/1P9hMR0Trb3qTshUgdITnAUxr_6BxFXiD/view?usp=sharing", icon: "https://i.pinimg.com/736x/cb/20/0f/cb200f4f968f0d005dd201850a1fbfc1.jpg" },
-        { title: "Angry Birds Rio", dev: "Rovio", cat: "Игры", url: "https://drive.google.com/file/d/1YU4A_ls6IxhtyMP2IVCerCfAoGyy_E-T/view?usp=sharing", icon: "https://static.wikia.nocookie.net/listofdeaths/images/a/a8/Angry_Birds_Rio.webp/revision/latest?cb=20220818172137" },
-        { title: "Talking Harry", dev: "Outfit7", cat: "Игры", url: "https://drive.google.com/file/d/17KsXzHYZ1Qh5Zw-77F8nIZmqKmHEJHFZ/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=d1363b1693894ae7a0e7a005ecafd0ec_l-6251463-images-thumbs&n=13" }
+        { title: "Minecraft Demo", dev: "Mojang", cat: "Игры", url: "https://drive.google.com/file/d/1v-ZqdCx34FrBknYiIj9DNseK3SX4EHer/view?usp=sharing", icon: "https://i.pinimg.com/originals/9e/ea/6c/9eea6cfc76afd8372abac37c528a221b.webp?nii=t" },
+        { title: "Talking Hippo", dev: "Outfit7", cat: "Игры", url: "https://drive.google.com/file/d/1e5KfrfT_P6nmmOZLYzuP5mLw_y2IrWE8/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=f43b46c5c654c4ed0a6cd9008777e55a_l-5220483-images-thumbs&n=13" },
+        { title: "Telegram X", dev: "Telegram", cat: "Соцсети", url: "https://drive.google.com/file/d/1BUXYJnBxjQQquy6QvLpntH8yuwsp-DMj/view?usp=drive_link", icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Telegram_X_2019_Logo.svg/3840px-Telegram_X_2019_Logo.svg.png" },
+        { title: "Angry Birds Rio", dev: "Rovio", cat: "Игры", url: "https://drive.google.com/file/d/1YU4A_ls6IxhtyMP2IVCerCfAoGyy_E-T/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=d05504126e4383c6188f2cd47836ed9c62c4f8ca-13101499-images-thumbs&n=13" },
+        { title: "Talking Roby the Robot", dev: "Outfit7", cat: "Игры", url: "https://drive.google.com/file/d/1eKoNRHrJ2T7kzqCGVLbKImhCodIsHFXw/view?usp=drive_link", icon: "https://avatars.mds.yandex.net/i?id=671e09815305f1c6109d9a0e9bee28e9_l-12585576-images-thumbs&n=13" },
+        { title: "Total Commander", dev: "Ghisler Software", cat: "Приложения", url: "https://drive.google.com/file/d/1gq-hKoFSiAVQ7IABhw0mHodZ6vlZg31e/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=3abaaf9229404022f709b94b57e30223_l-5350544-images-thumbs&n=13" }
     ];
 
     let currentUser = null;
@@ -163,7 +167,7 @@
     function toggleAuthMode() {
         isLoginMode = !isLoginMode;
         document.getElementById('modal-title-text').innerText = isLoginMode ? 'Авторизация' : 'Регистрация';
-        document.getElementById('auth-btn').innerText = isLoginMode ? 'Войти' : 'Зарегистрироваться';
+        document.getElementById('auth-btn').innerText = isLoginMode ? 'Войти' : 'Регистрация';
     }
 
     function toggleDropdown() { const d = document.getElementById('dropdown-menu'); d.style.display = (d.style.display === 'block') ? 'none' : 'block'; }
