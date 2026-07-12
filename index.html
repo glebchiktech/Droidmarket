@@ -87,13 +87,20 @@
 
     <div id="source-page" class="page">
         <h2>Исходный код проекта</h2>
-        <textarea readonly id="full-code">Код доступен для копирования</textarea>
+        <textarea readonly id="full-code"></textarea>
         <button onclick="showPage('settings')">Назад</button>
     </div>
 </main>
 
 <script>
     const ALL_APPS = [
+        { title: "Kate Mobile", dev: "Kate", cat: "Соцсети", url: "https://drive.google.com/file/d/1kRUWzdLZSgwi5q67mcX3A-GmLIH06eda/view?usp=sharing", icon: "https://play-lh.googleusercontent.com/fCEL_ORrwZjRtJg_KI6AiqXyu1Gg6qsIvQOWNX25c0YFrMQ0Jz93RCNEGFWMctkVUuc1=w600-h300-pc0xffffff-pd" },
+        { title: "Jetpack Joyride", dev: "Halfbrick", cat: "Игры", url: "https://drive.google.com/file/d/1p52Kq2ErxntyRfcSskJ3mG0PpsB8fSAL/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=0811caaec753042ddcd41fccc022a766c5c95b84-5569020-images-thumbs&n=13" },
+        { title: "Angry Birds Star Wars", dev: "Rovio", cat: "Игры", url: "https://drive.google.com/file/d/108nC67VsdXXteRjiJ0LsEWmoEES9QTxD/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=2bcc4bc66ac0c9ae7a1575afb1d49568_l-4576320-images-thumbs&n=13" },
+        { title: "Undertale", dev: "Toby Fox", cat: "Игры", url: "https://drive.google.com/file/d/1zzBN7OVNr-OOrkWCe2x6sR8vM8Tz27cJ/view?usp=sharing", icon: "https://i.pinimg.com/originals/3d/91/1e/3d911edb3c3b52e04f6c08b95b3b97ce.jpg?nii=t" },
+        { title: "Talking Angela", dev: "Outfit7", cat: "Игры", url: "https://drive.google.com/file/d/101I08Dvwm2wmmfLWppumfxKlrFW30e5N/view?usp=sharing", icon: "https://i.pinimg.com/originals/1f/f5/66/1ff5664574601bd4beb5bfd39345f63b.png?nii=t" },
+        { title: "Play Market", dev: "Google", cat: "Приложения", url: "https://drive.google.com/file/d/1HEtYqSxhzn3xln54i1lmpV4cowTs2x1z/view?usp=sharing", icon: "https://i.pinimg.com/originals/4b/95/0d/4b950dfeae8f9edbf0ad7f534ac89bd7.jpg?nii=t" },
+        { title: "Bad Piggies", dev: "Rovio", cat: "Игры", url: "https://drive.google.com/file/d/1rD55WmK7Hh7Eihoy5mXbmD2WS7w3SEJ3/view?usp=sharing", icon: "https://static.wikia.nocookie.net/badpiggiesgame/images/c/cd/533451786_mzm.rjnqtfdu.png/revision/latest?cb=20121029133803" },
         { title: "Talking Harry", dev: "Outfit7", cat: "Игры", url: "https://drive.google.com/file/d/17KsXzHYZ1Qh5Zw-77F8nIZmqKmHEJHFZ/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=85ab069b353b71404d06a5ad639b2eb67160090e-11444350-images-thumbs&n=13" },
         { title: "Instagram Lite", dev: "Instagram", cat: "Соцсети", url: "https://drive.google.com/file/d/1addBRtRibNqdSNZJV7FzUBkhV4Bg6gsv/view?usp=sharing", icon: "https://play-lh.googleusercontent.com/h9THn4Ou1Qz9_CpTVxtatkF8yZV9YP2T3D6-ZxMvsnV0TbLL_LiVIMmTprcosjq0SPHu=w600-h300-pc0xffffff-pd" },
         { title: "Cut the Rope Experiments", dev: "ZeptoLab", cat: "Игры", url: "https://drive.google.com/file/d/1REnVCml4AeC_EG2ZmEVAtY2S9XS-W5I3/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=6794b89aac5b211ce732c728307612d8b112ce46-10494455-images-thumbs&n=13" },
