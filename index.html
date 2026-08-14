@@ -1,34 +1,290 @@
 <!DOCTYPE html>
-<html lang="ru" data-theme="gingerbread">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Android Market 1.0</title>
+    <title>Android Market</title>
     <style>
-        :root { --market-bg: #141414; --android-green: #a4c639; --text-main: #ffffff; --card-bg: #252525; --card-border: #333333; }
-        [data-theme="holo"] { --market-bg: #e2e2e2; --android-green: #0099cc; --text-main: #222222; --card-bg: #ffffff; --card-border: #c5c5c5; }
-        body { font-family: sans-serif; background-color: var(--market-bg); color: var(--text-main); margin: 0; display: flex; flex-direction: column; min-height: 100vh; }
+        :root {
+            --market-bg: #f5f5f5;
+            --header-bg: #212121;
+            --android-green: #a4c639;
+            --android-green-dark: #88a42e;
+            --text-main: #333333;
+            --text-secondary: #777777;
+            --card-bg: #ffffff;
+            --card-border: #e0e0e0;
+            --dropdown-bg: #ffffff;
+            --dropdown-text: #333333;
+        }
+
+        body.dark-theme {
+            --market-bg: #121212;
+            --header-bg: #1e1e1e;
+            --text-main: #e0e0e0;
+            --text-secondary: #aaaaaa;
+            --card-bg: #1e1e1e;
+            --card-border: #333333;
+            --dropdown-bg: #222222;
+            --dropdown-text: #ffffff;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--market-bg);
+            color: var(--text-main);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* Шапка в стиле Android Market 2011 */
+        header {
+            background: var(--header-bg);
+            padding: 12px 20px;
+            border-bottom: 4px solid var(--android-green);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        header h1 {
+            color: #ffffff;
+            margin: 0;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        header img {
+            height: 28px;
+        }
+
+        .search-box {
+            flex-grow: 1;
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #444;
+            background: #333;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+        }
+        .search-box:focus {
+            border-color: var(--android-green);
+        }
+
+        .menu-btn {
+            cursor: pointer;
+            font-size: 20px;
+            color: #fff;
+            background: #333;
+            padding: 6px 12px;
+            border-radius: 4px;
+            border: 1px solid #444;
+            user-select: none;
+        }
+        .menu-btn:hover {
+            background: #444;
+        }
+
+        /* Выпадающее меню категорий */
+        .dropdown {
+            display: none;
+            position: absolute;
+            right: 20px;
+            top: 60px;
+            background: var(--dropdown-bg);
+            border: 1px solid var(--card-border);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            border-radius: 4px;
+            padding: 5px 0;
+            z-index: 100;
+            width: 200px;
+        }
+        .dropdown div {
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--dropdown-text);
+        }
+        .dropdown div:hover {
+            background: var(--android-green);
+            color: #fff;
+        }
+
+        /* Баннер и вкладки */
+        .banner { 
+            background: linear-gradient(to bottom, #b5db49, #95b632);
+            color: white; 
+            padding: 10px; 
+            text-align: center; 
+            cursor: pointer; 
+            font-weight: bold; 
+            font-size: 14px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.4);
+        }
+
+        .featured-container { 
+            display: flex; 
+            gap: 10px; 
+            padding: 15px 20px 5px 20px; 
+            max-width: 900px; 
+            margin: 0 auto; 
+            width: 100%;
+            box-sizing: border-box;
+        }
         
-        header { position: sticky; top: 0; background: #000; padding: 15px; border-bottom: 3px solid var(--android-green); display: flex; align-items: center; gap: 10px; z-index: 1000; }
-        header h1 { color: #ffffff; margin: 0; font-size: 20px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
-        header img { height: 24px; }
+        .featured-btn { 
+            padding: 8px 16px; 
+            background: var(--card-bg); 
+            border: 1px solid var(--card-border); 
+            color: var(--text-main); 
+            cursor: pointer; 
+            border-radius: 4px; 
+            font-size: 13px;
+            font-weight: bold;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .featured-btn:hover {
+            border-color: var(--android-green);
+            color: var(--android-green-dark);
+        }
+
+        /* Основной контейнер каталога */
+        .market-container { 
+            max-width: 900px; 
+            margin: 0 auto; 
+            padding: 15px 20px 30px 20px; 
+            flex: 1; 
+            width: 100%; 
+            box-sizing: border-box; 
+        }
+
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); 
+            gap: 15px; 
+        }
+
+        /* Карточка приложения в стиле 2011 */
+        .card { 
+            background: var(--card-bg); 
+            border: 1px solid var(--card-border); 
+            padding: 12px; 
+            border-radius: 6px; 
+            transition: 0.2s; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            text-align: center; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            cursor: pointer;
+        }
+        .card:hover { 
+            border-color: var(--android-green); 
+            box-shadow: 0 2px 8px rgba(164, 198, 57, 0.3); 
+        }
+
+        .app-icon { 
+            width: 56px; 
+            height: 56px; 
+            border-radius: 8px; 
+            margin-bottom: 8px; 
+            object-fit: contain; 
+            background: #fff;
+            border: 1px solid #eee;
+        }
+
+        .card h3 {
+            font-size: 15px;
+            margin: 0 0 4px 0;
+            color: var(--text-main);
+        }
+
+        .card p {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin: 0 0 12px 0;
+        }
+
+        .download-btn { 
+            background: linear-gradient(to bottom, #b5db49, #95b632); 
+            border: 1px solid #7d9b28;
+            padding: 6px 12px; 
+            text-decoration: none; 
+            color: #fff; 
+            border-radius: 4px; 
+            display: block; 
+            text-align: center; 
+            margin-top: auto; 
+            font-weight: bold; 
+            font-size: 12px;
+            width: 100%; 
+            box-sizing: border-box; 
+            text-shadow: 0 -1px 0 rgba(0,0,0,0.2);
+            cursor: pointer;
+        }
+        .download-btn:hover {
+            background: linear-gradient(to bottom, #c2e554, #88a42e);
+        }
+
+        /* Страницы */
+        .page { display: none; }
         
-        .banner { background: var(--android-green); color: white; padding: 10px; text-align: center; cursor: pointer; font-weight: bold; margin-bottom: 10px; }
-        .featured-container { display: flex; gap: 10px; padding: 10px; justify-content: center; }
-        .featured-btn { padding: 10px 20px; background: var(--card-bg); border: 1px solid var(--android-green); color: var(--text-main); cursor: pointer; border-radius: 8px; font-weight: bold; }
-        
-        .market-container { max-width: 900px; margin: auto; padding: 20px; flex: 1; width: 100%; box-sizing: border-box; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
-        .card { background: var(--card-bg); border: 2px solid var(--card-border); padding: 15px; border-radius: 15px; transition: 0.3s; display: flex; flex-direction: column; align-items: center; text-align: center; }
-        .card:hover { border-color: var(--android-green); box-shadow: 0 0 10px var(--android-green); }
-        .app-icon { width: 60px; height: 60px; border-radius: 10px; margin-bottom: 10px; object-fit: contain; background: #fff; }
-        
-        .page { display: none; padding: 20px; }
-        .menu-btn { cursor: pointer; font-size: 24px; color: var(--android-green); margin-left: auto; }
-        .dropdown { display: none; position: absolute; right: 10px; top: 60px; background: #333; border: 1px solid #555; padding: 10px; z-index: 100; width: 180px; }
-        .download-btn { background: var(--android-green); padding: 10px; text-decoration: none; color: #fff; border-radius: 6px; display: block; text-align: center; margin-top: auto; font-weight: bold; width: 100%; box-sizing: border-box; }
-        button { padding: 12px 25px; background: var(--android-green); border: none; cursor: pointer; color: white; font-weight: bold; border-radius: 5px; width: 100%; margin-top: 5px; }
-        textarea { width: 100%; height: 300px; background: #000; color: #0f0; font-family: monospace; font-size: 12px; border: 1px solid var(--android-green); padding: 10px; }
+        /* Страница детальной информации */
+        .detail-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 6px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        button.back-btn { 
+            padding: 10px 20px; 
+            background: var(--card-border); 
+            border: 1px solid #ccc; 
+            cursor: pointer; 
+            color: var(--text-main); 
+            font-weight: bold; 
+            border-radius: 4px; 
+            width: 100%; 
+            margin-top: 15px; 
+            font-size: 14px;
+        }
+        button.back-btn:hover {
+            opacity: 0.8;
+        }
+
+        textarea { 
+            width: 100%; 
+            height: 300px; 
+            background: #1e1e1e; 
+            color: #a4c639; 
+            font-family: monospace; 
+            font-size: 12px; 
+            border: 1px solid #444; 
+            padding: 10px; 
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        h2 {
+            font-size: 22px;
+            color: var(--text-main);
+            margin-top: 0;
+        }
     </style>
 </head>
 <body>
@@ -36,146 +292,439 @@
 <header>
     <h1 onclick="showPage('main')">
         <img src="https://upload.wikimedia.org/wikipedia/commons/d/d7/Android_robot.svg" alt="Android">
-        androidmarket
+        Android Market
     </h1>
-    <input type="text" id="search" placeholder="Поиск..." onkeyup="renderApps()" style="padding: 8px; flex-grow: 1; border-radius: 5px; border: none; margin-left: 10px;">
-    <span class="menu-btn" onclick="toggleDropdown()">☰</span>
-    <span class="menu-btn" onclick="showPage('settings')" style="margin-left: 10px;">⚙️</span>
+    <input type="text" id="search" class="search-box" placeholder="Поиск приложений и игр..." onkeyup="renderApps()">
+    <span class="menu-btn" onclick="toggleDropdown()"><span id="lbl-categories">Категории</span> ▾</span>
+    <span class="menu-btn" onclick="showPage('settings')" title="Настройки">⚙️</span>
 </header>
 
-<div class="banner" onclick="window.open('https://t.me/glebssonchikbyr', '_blank')">Вступай в мой Telegram: t.me/glebssonchikbyr</div>
+<div class="banner" onclick="window.open('https://t.me/glebssonchikbyr', '_blank')">Вступай в мой Telegram-канал: t.me/glebssonchikbyr</div>
 
 <div class="featured-container">
-    <div class="featured-btn" onclick="filterCat('Приложения')">Лучшие приложения</div>
-    <div class="featured-btn" onclick="filterCat('Игры')">Лучшие игры</div>
+    <div class="featured-btn" onclick="filterCat('Все')" id="btn-all">Все элементы</div>
+    <div class="featured-btn" onclick="filterCat('Приложения')" id="btn-apps">Приложения</div>
+    <div class="featured-btn" onclick="filterCat('Игры')" id="btn-games">Игры</div>
 </div>
 
 <div id="dropdown-menu" class="dropdown">
-    <div onclick="filterCat('Все')">📦 Все</div>
-    <div onclick="filterCat('Приложения')">📱 Приложения</div>
-    <div onclick="filterCat('Игры')">🎮 Игры</div>
-    <div onclick="filterCat('Соцсети')">💬 Соцсети</div>
-    <div onclick="filterCat('Симуляторы')">🚗 Симуляторы</div>
-    <div onclick="filterCat('Системное')">⚙️ Системное</div>
+    <div onclick="filterCat('Все')" id="cat-all">📦 Все</div>
+    <div onclick="filterCat('Приложения')" id="cat-apps">📱 Приложения</div>
+    <div onclick="filterCat('Игры')" id="cat-games">🎮 Игры</div>
+    <div onclick="filterCat('Соцсети')" id="cat-social">💬 Соцсети</div>
+    <div onclick="filterCat('Симуляторы')" id="cat-sim">🚗 Симуляторы</div>
+    <div onclick="filterCat('Системное')" id="cat-sys">⚙️ Системное</div>
 </div>
 
 <main class="market-container">
     <div id="main-page" class="page" style="display:block;"><div id="dynamic-list" class="grid"></div></div>
     
-    <!-- НОВАЯ СТРАНИЦА ДЕТАЛЕЙ -->
     <div id="detail-page" class="page">
-        <div class="card" style="text-align: left; align-items: flex-start;">
-            <img id="detail-icon" class="app-icon" style="width: 100px; height: 100px;">
-            <h2 id="detail-title"></h2>
-            <p id="detail-dev" style="color: var(--android-green);"></p>
-            <p id="detail-desc" style="line-height: 1.5;"></p>
-            <a id="detail-link" class="download-btn" target="_blank">Установить</a>
-            <button onclick="showPage('main')">Назад</button>
+        <div class="detail-card">
+            <div style="display: flex; gap: 20px; align-items: center; width: 100%; margin-bottom: 15px;">
+                <img id="detail-icon" class="app-icon" style="width: 80px; height: 80px; margin-bottom: 0;">
+                <div>
+                    <h2 id="detail-title" style="margin: 0 0 5px 0;"></h2>
+                    <p id="detail-dev" style="color: var(--android-green-dark); font-weight: bold; margin: 0; font-size: 14px;"></p>
+                </div>
+            </div>
+            
+            <img id="detail-screenshot" style="width: 100%; max-height: 280px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd; margin-bottom: 15px; display: none;" alt="Скриншот">
+
+            <p id="detail-desc" style="line-height: 1.6; margin-bottom: 20px; font-size: 14px; color: var(--text-secondary);"></p>
+            <a id="detail-link" class="download-btn" style="padding: 10px; font-size: 14px;" target="_blank" download>Установить</a>
+            <button class="back-btn" onclick="showPage('main')" id="lbl-back-list">Назад к списку</button>
         </div>
     </div>
     
     <div id="settings-page" class="page">
-        <h2>Настройки</h2>
-        <div class="card" style="cursor:pointer" onclick="changeTheme('gingerbread')">Тема: Gingerbread</div>
-        <div class="card" style="cursor:pointer" onclick="changeTheme('holo')">Тема: Holo UI</div>
-        <div class="card" style="cursor:pointer" onclick="showPage('rules')">Правила безопасности</div>
-        <div class="card" style="cursor:pointer" onclick="showPage('about')">О версии</div>
-        <div class="card" style="cursor:pointer" onclick="showPage('source')">Свободное ПО</div>
-        <button onclick="showPage('main')">Назад</button>
+        <h2 id="set-title">Настройки</h2>
+        
+        <!-- Смена темы оформления -->
+        <div class="card" style="align-items: flex-start; text-align: left; margin-bottom: 10px;">
+            <h3 id="set-theme-title">Тема оформления</h3>
+            <p id="theme-status-text" style="margin-bottom: 8px;">Светлая</p>
+            <button class="download-btn" style="width: auto;" onclick="toggleTheme()" id="set-theme-btn">Сменить тему</button>
+        </div>
+
+        <!-- Смена языка -->
+        <div class="card" style="align-items: flex-start; text-align: left; margin-bottom: 10px;">
+            <h3 id="set-lang-title">Язык интерфейса</h3>
+            <select id="lang-select" class="search-box" style="width: 100%; margin-top: 5px; background: var(--card-bg); color: var(--text-main); border: 1px solid var(--card-border);" onchange="changeLanguage(this.value)">
+                <option value="ru">Русский</option>
+                <option value="en">English</option>
+                <option value="de">Deutsch</option>
+                <option value="es">Español</option>
+                <option value="zh">中文</option>
+                <option value="ko">한국어</option>
+            </select>
+        </div>
+
+        <div class="card" style="cursor:pointer; align-items: flex-start; text-align: left; margin-bottom: 10px;" onclick="showPage('rules')">
+            <h3 id="set-rules-title">Правила безопасности</h3>
+            <p id="set-rules-desc">Информация об использовании приложений</p>
+        </div>
+        <div class="card" style="cursor:pointer; align-items: flex-start; text-align: left; margin-bottom: 10px;" onclick="showPage('about')">
+            <h3 id="set-about-title">О версии</h3>
+            <p id="set-about-desc">Информация о сборке Android Market</p>
+        </div>
+        <div class="card" style="cursor:pointer; align-items: flex-start; text-align: left; margin-bottom: 10px;" onclick="showPage('source')">
+            <h3 id="set-source-title">Свободное ПО / Исходный код</h3>
+            <p id="set-source-desc">Просмотреть исходный код страницы</p>
+        </div>
+        <button class="back-btn" onclick="showPage('main')" id="lbl-back">Назад</button>
     </div>
 
     <div id="rules-page" class="page">
-        <h2>Правила безопасности</h2>
-        <p>Используйте приложения на свой страх и риск. Проверяйте файлы антивирусом.</p>
-        <button onclick="showPage('settings')">Назад</button>
+        <div class="detail-card">
+            <h2 id="rules-page-title">Правила безопасности</h2>
+            <p id="rules-page-text" style="font-size: 14px; line-height: 1.5;">Используйте приложения на свой страх и риск. Проверяйте файлы антивирусом перед установкой на устройство.</p>
+            <button class="back-btn" onclick="showPage('settings')" id="rules-back">Назад</button>
+        </div>
     </div>
 
     <div id="about-page" class="page">
-        <h2>О версии</h2>
-        <p>Android Market 1.0</p>
-        <p>Создатель: <b>Глеб</b></p>
-        <p>Помощники: <b>Ваня, Артем, Рома</b></p>
-        <button onclick="showPage('settings')">Назад</button>
+        <div class="detail-card">
+            <h2 id="about-page-title">О версии</h2>
+            <p style="font-size: 14px;">Android Market 1.0 (Retro Edition)</p>
+            <p style="font-size: 14px;" id="about-creator">Создатель: <b>Глеб</b></p>
+            <p style="font-size: 14px;" id="about-helpers">Помощники: <b>Ваня, Артем, Рома</b></p>
+            <button class="back-btn" onclick="showPage('settings')" id="about-back">Назад</button>
+        </div>
     </div>
 
     <div id="source-page" class="page">
-        <h2>Исходный код проекта</h2>
-        <textarea readonly id="full-code"></textarea>
-        <button onclick="showPage('settings')">Назад</button>
+        <div class="detail-card">
+            <h2 id="source-page-title">Исходный код проекта</h2>
+            <textarea readonly id="full-code"></textarea>
+            <button class="back-btn" onclick="showPage('settings')" id="source-back">Назад</button>
+        </div>
     </div>
 </main>
 
 <script>
+    const translations = {
+        ru: {
+            searchPlaceholder: "Поиск приложений и игр...",
+            categories: "Категории",
+            allElements: "Все элементы",
+            apps: "Приложения",
+            games: "Игры",
+            social: "Соцсети",
+            sim: "Симуляторы",
+            sys: "Системное",
+            install: "Установить",
+            backToList: "Назад к списку",
+            back: "Назад",
+            settings: "Настройки",
+            themeTitle: "Тема оформления",
+            themeLight: "Светлая",
+            themeDark: "Темная",
+            themeBtn: "Сменить тему",
+            langTitle: "Язык интерфейса",
+            rulesTitle: "Правила безопасности",
+            rulesDesc: "Информация об использовании приложений",
+            aboutTitle: "О версии",
+            aboutDesc: "Информация о сборке Android Market",
+            sourceTitle: "Свободное ПО / Исходный код",
+            sourceDesc: "Просмотреть исходный код страницы",
+            safetyText: "Используйте приложения на свой страх и риск. Проверяйте файлы антивирусом перед установкой на устройство.",
+            creator: "Создатель: <b>Глеб</b>",
+            helpers: "Помощники: <b>Ваня, Артем, Рома</b>",
+            devPrefix: "Разработчик: "
+        },
+        en: {
+            searchPlaceholder: "Search apps and games...",
+            categories: "Categories",
+            allElements: "All items",
+            apps: "Apps",
+            games: "Games",
+            social: "Social",
+            sim: "Simulators",
+            sys: "System",
+            install: "Install",
+            backToList: "Back to list",
+            back: "Back",
+            settings: "Settings",
+            themeTitle: "Theme",
+            themeLight: "Light",
+            themeDark: "Dark",
+            themeBtn: "Change Theme",
+            langTitle: "Interface Language",
+            rulesTitle: "Safety Rules",
+            rulesDesc: "Information about using applications",
+            aboutTitle: "About Version",
+            aboutDesc: "Android Market build information",
+            sourceTitle: "Free Software / Source Code",
+            sourceDesc: "View page source code",
+            safetyText: "Use applications at your own risk. Check files with an antivirus before installation.",
+            creator: "Creator: <b>Gleb</b>",
+            helpers: "Helpers: <b>Vanya, Artem, Roma</b>",
+            devPrefix: "Developer: "
+        },
+        de: {
+            searchPlaceholder: "Apps und Spiele suchen...",
+            categories: "Kategorien",
+            allElements: "Alle Elemente",
+            apps: "Apps",
+            games: "Spiele",
+            social: "Sozial",
+            sim: "Simulatoren",
+            sys: "System",
+            install: "Installieren",
+            backToList: "Zurück zur Liste",
+            back: "Zurück",
+            settings: "Einstellungen",
+            themeTitle: "Thema",
+            themeLight: "Hell",
+            themeDark: "Dunkel",
+            themeBtn: "Thema wechseln",
+            langTitle: "Sprache",
+            rulesTitle: "Sicherheitsregeln",
+            rulesDesc: "Informationen zur Verwendung von Apps",
+            aboutTitle: "Über die Version",
+            aboutDesc: "Android Market Build-Informationen",
+            sourceTitle: "Freie Software / Quellcode",
+            sourceDesc: "Quellcode anzeigen",
+            safetyText: "Nutzen Sie Apps auf eigene Gefahr. Vor der Installation mit Antivirus prüfen.",
+            creator: "Ersteller: <b>Gleb</b>",
+            helpers: "Helfer: <b>Vanya, Artem, Roma</b>",
+            devPrefix: "Entwickler: "
+        },
+        es: {
+            searchPlaceholder: "Buscar apps y juegos...",
+            categories: "Categorías",
+            allElements: "Todos",
+            apps: "Aplicaciones",
+            games: "Juegos",
+            social: "Social",
+            sim: "Simuladores",
+            sys: "Sistema",
+            install: "Instalar",
+            backToList: "Volver a la lista",
+            back: "Volver",
+            settings: "Ajustes",
+            themeTitle: "Tema",
+            themeLight: "Claro",
+            themeDark: "Oscuro",
+            themeBtn: "Cambiar tema",
+            langTitle: "Idioma",
+            rulesTitle: "Normas de seguridad",
+            rulesDesc: "Información sobre el uso de aplicaciones",
+            aboutTitle: "Acerca de",
+            aboutDesc: "Información de la versión de Android Market",
+            sourceTitle: "Software libre / Código fuente",
+            sourceDesc: "Ver código fuente",
+            safetyText: "Usa las aplicaciones bajo tu propio riesgo. Revisa los archivos antes de instalar.",
+            creator: "Creador: <b>Gleb</b>",
+            helpers: "Ayudantes: <b>Vanya, Artem, Roma</b>",
+            devPrefix: "Desarrollador: "
+        },
+        zh: {
+            searchPlaceholder: "搜索应用和游戏...",
+            categories: "分类",
+            allElements: "所有项目",
+            apps: "应用",
+            games: "游戏",
+            social: "社交",
+            sim: "模拟器",
+            sys: "系统",
+            install: "安装",
+            backToList: "返回列表",
+            back: "返回",
+            settings: "设置",
+            themeTitle: "主题",
+            themeLight: "浅色",
+            themeDark: "深色",
+            themeBtn: "切换主题",
+            langTitle: "界面语言",
+            rulesTitle: "安全规则",
+            rulesDesc: "关于使用应用程序的信息",
+            aboutTitle: "关于版本",
+            aboutDesc: "Android Market 构建信息",
+            sourceTitle: "自由软件 / 源代码",
+            sourceDesc: "查看源代码",
+            safetyText: "使用应用程序自担风险。安装前请用杀毒软件检查。",
+            creator: "创建者: <b>Gleb</b>",
+            helpers: "助手: <b>Vanya, Artem, Roma</b>",
+            devPrefix: "开发者: "
+        },
+        ko: {
+            searchPlaceholder: "앱 및 게임 검색...",
+            categories: "카테고리",
+            allElements: "모든 항목",
+            apps: "앱",
+            games: "게임",
+            social: "소셜",
+            sim: "시뮬레이터",
+            sys: "시스템",
+            install: "설치",
+            backToList: "목록으로 돌아가기",
+            back: "뒤로",
+            settings: "설정",
+            themeTitle: "테마",
+            themeLight: "밝게",
+            themeDark: "어둡게",
+            themeBtn: "테마 변경",
+            langTitle: "언어 설정",
+            rulesTitle: "안전 규칙",
+            rulesDesc: "앱 사용에 관한 정보",
+            aboutTitle: "버전 정보",
+            aboutDesc: "Android Market 빌드 정보",
+            sourceTitle: "자유 소프트웨어 / 소스 코드",
+            sourceDesc: "페이지 소스 코드 보기",
+            safetyText: "앱 사용에 대한 책임은 사용자에게 있습니다. 설치 전 백신으로 파일을 검사하세요.",
+            creator: "제작자: <b>Gleb</b>",
+            helpers: "도우미: <b>Vanya, Artem, Roma</b>",
+            devPrefix: "개발자: "
+        }
+    };
+
+    let currentLang = 'ru';
+
     const ALL_APPS = [
-        { title: "Xperia Launcher", dev: "Sony", cat: "Приложения", description: "Лаунчер в стиле Sony Xperia.", url: "https://drive.google.com/file/d/1gyOpV-DoRiYePtvWn54UUXGLzm4mA9IG/view?usp=sharing", icon: "https://lh3.ggpht.com/gCtdzfCgHO4opGAhJXCXxmf4geNnL5M6qclFc-Ah6l5QNkwDVwBhY49mbp4DFe5Lc41P" },
-        { title: "Яндекс Погода", dev: "Yandex", cat: "Приложения", description: "Точный прогноз погоды в вашем городе.", url: "https://drive.google.com/file/d/1MlqcJfGBd6_Cdy56Ge4SP-1-hwWFHN9U/view?usp=sharing", icon: "https://trashbox.ru/ifiles2/783790_f4f90b_og_image.png/yandeks.pogoda-vyshla-na-windows-phone-1.webp" },
-        { title: "OpenVK", dev: "OpenVK Team", cat: "Соцсети", description: "Альтернативный клиент для соцсети VK.", url: "https://drive.google.com/file/d/1EgmjQiXODPl9zI8nn5XUI5AjBK-G16In/view?usp=sharing", icon: "https://4pda.to/s/j7797bh6z2F8uPQjSFojITkGNQmFhaAz1HDGB.png" },
-        { title: "Kate Mobile", dev: "Kate", cat: "Соцсети", description: "Классический клиент для VK.", url: "https://drive.google.com/file/d/1kRUWzdLZSgwi5q67mcX3A-GmLIH06eda/view?usp=sharing", icon: "https://play-lh.googleusercontent.com/fCEL_ORrwZjRtJg_KI6AiqXyu1Gg6qsIvQOWNX25c0YFrMQ0Jz93RCNEGFWMctkVUuc1=w600-h300-pc0xffffff-pd" },
-        { title: "Jetpack Joyride", dev: "Halfbrick", cat: "Игры", description: "Бесконечный раннер про полет на джетпаке.", url: "https://drive.google.com/file/d/1p52Kq2ErxntyRfcSskJ3mG0PpsB8fSAL/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=0811caaec753042ddcd41fccc022a766c5c95b84-5569020-images-thumbs&n=13" },
-        { title: "Angry Birds Star Wars", dev: "Rovio", cat: "Игры", description: "Злые птицы в сеттинге Звездных Войн.", url: "https://drive.google.com/file/d/108nC67VsdXXteRjiJ0LsEWmoEES9QTxD/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=2bcc4bc66ac0c9ae7a1575afb1d49568_l-4576320-images-thumbs&n=13" },
-        { title: "Undertale", dev: "Toby Fox", cat: "Игры", description: "RPG, где вы можете никого не убивать.", url: "https://drive.google.com/file/d/1zzBN7OVNr-OOrkWCe2x6sR8vM8Tz27cJ/view?usp=sharing", icon: "https://i.pinimg.com/originals/3d/91/1e/3d911edb3c3b52e04f6c08b95b3b97ce.jpg?nii=t" },
-        { title: "Talking Angela", dev: "Outfit7", cat: "Игры", description: "Виртуальный питомец Анджела.", url: "https://drive.google.com/file/d/101I08Dvwm2wmmfLWppumfxKlrFW30e5N/view?usp=sharing", icon: "https://i.pinimg.com/originals/1f/f5/66/1ff5664574601bd4beb5bfd39345f63b.png?nii=t" },
-        { title: "Play Market", dev: "Google", cat: "Приложения", description: "Магазин приложений для Android.", url: "https://drive.google.com/file/d/1HEtYqSxhzn3xln54i1lmpV4cowTs2x1z/view?usp=sharing", icon: "https://i.pinimg.com/originals/4b/95/0d/4b950dfeae8f9edbf0ad7f534ac89bd7.jpg?nii=t" },
-        { title: "Bad Piggies", dev: "Rovio", cat: "Игры", description: "Головоломка про строительство техники для свиней.", url: "https://drive.google.com/file/d/1rD55WmK7Hh7Eihoy5mXbmD2WS7w3SEJ3/view?usp=sharing", icon: "https://static.wikia.nocookie.net/badpiggiesgame/images/c/cd/533451786_mzm.rjnqtfdu.png/revision/latest?cb=20121029133803" },
-        { title: "Talking Harry", dev: "Outfit7", cat: "Игры", description: "Говорящий Гарри.", url: "https://drive.google.com/file/d/17KsXzHYZ1Qh5Zw-77F8nIZmqKmHEJHFZ/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=85ab069b353b71404d06a5ad639b2eb67160090e-11444350-images-thumbs&n=13" },
-        { title: "Instagram Lite", dev: "Instagram", cat: "Соцсети", description: "Облегченная версия Instagram.", url: "https://drive.google.com/file/d/1addBRtRibNqdSNZJV7FzUBkhV4Bg6gsv/view?usp=sharing", icon: "https://play-lh.googleusercontent.com/h9THn4Ou1Qz9_CpTVxtatkF8yZV9YP2T3D6-ZxMvsnV0TbLL_LiVIMmTprcosjq0SPHu=w600-h300-pc0xffffff-pd" },
-        { title: "Cut the Rope Experiments", dev: "ZeptoLab", cat: "Игры", description: "Головоломка с Ам Нямом.", url: "https://drive.google.com/file/d/1REnVCml4AeC_EG2ZmEVAtY2S9XS-W5I3/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=6794b89aac5b211ce732c728307612d8b112ce46-10494455-images-thumbs&n=13" },
-        { title: "Talking Tom Cat", dev: "Outfit7", cat: "Игры", description: "Первый говорящий кот.", url: "https://drive.google.com/file/d/1AWKxcjsDOgOsw7J1UFGuDKlylaRMEME_/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=4fc21b57a74d91e394dc4f3f2d9f6c093deef435-5277049-images-thumbs&n=13" },
-        { title: "Talking Santa", dev: "Outfit7", cat: "Игры", description: "Говорящий Санта Клаус.", url: "https://drive.google.com/file/d/1j4fMu3uClH-UzySxs9DjNzLUWbz5MEyd/view?usp=drive_link", icon: "https://avatars.mds.yandex.net/i?id=113628f343f0285b8aa89c059d4b0b6d_l-5383459-images-thumbs&n=13" },
-        { title: "Google Maps", dev: "Google", cat: "Приложения", description: "Карты и навигация.", url: "https://drive.google.com/file/d/1Kd1TBHa99l7_qcjZ8r7yUS5BLGrMee9f/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=86d86ae777eb0584d60c1ff34cac52761c94c7d2-5251072-images-thumbs&n=13" },
-        { title: "TikTok Lite", dev: "TikTok", cat: "Соцсети", description: "Легкая версия TikTok.", url: "https://drive.google.com/file/d/1XJTvFZJc_Q0Pukd85mcRhoFJrc2Zburt/view?usp=sharing", icon: "https://play-lh.googleusercontent.com/3IsKguab6RdO2U-jim9f5nO1aZZuo-V0o24W9ar0JFpM_0IwaXaM1mi_-RSP_1IHf7E_XC4UC_U8-g7s_pHWFOE=w600-h300-pc0xffffff-pd" },
-        { title: "Яндекс Браузер", dev: "Yandex", cat: "Приложения", description: "Браузер с Алисой.", url: "https://drive.google.com/file/d/1jPII-bNMfvXlDwW8LzRc-NuXacAGACYZ/view?usp=sharing", icon: "https://w7.pngwing.com/pngs/910/334/png-transparent-yandex-browser-web-browser-firefox-google-chrome-opera-google-plus-google-plus-computer-program-sphere-internet.png" },
-        { title: "4PDA", dev: "4PDA", cat: "Приложения", description: "Клиент форума 4PDA.", url: "https://drive.google.com/file/d/1XYzEi9nApeC0yX0EQjhyO4M7IrTgG1Mi/view?usp=drive_link", icon: "https://cdnb.nashstore.ru/api/v1/media/ca961c9f075925b85a2405bf/original" },
-        { title: "Google Chrome", dev: "Google", cat: "Приложения", description: "Быстрый браузер.", url: "https://drive.google.com/file/d/1E42luN1WOazdl16Ly_0v73N9mnpX74DR/view?usp=drive_link", icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Chrome_icon_%28September_2014%29.svg/500px-Google_Chrome_icon_%28September_2014%29.svg.png" },
-        { title: "Angry Birds", dev: "Rovio", cat: "Игры", description: "Классическая игра про злых птиц.", url: "https://drive.google.com/file/d/1WcSLLHGT5cs_0bp_jihQV1ZCNUyE-bUH/view?usp=drive_link", icon: "https://i.pinimg.com/originals/9e/3d/8a/9e3d8a0e6e85c7c136bcdd39f2ce40c0.png" },
-        { title: "Flappy Bird", dev: ".GEARS", cat: "Игры", description: "Сложная игра про летающую птичку.", url: "https://drive.google.com/file/d/1cBtzO4ftRV_rIClrcigeymCYdexTN-YE/view?usp=sharing", icon: "https://static.wikia.nocookie.net/igromania/images/d/db/Flappy_Bird.jpeg/revision/latest?cb=20231126155241&path-prefix=ru" },
-        { title: "Cut the Rope", dev: "ZeptoLab", cat: "Игры", description: "Накорми Ам Няма леденцом.", url: "https://drive.google.com/file/d/1gtLPyqrvUyQiCI5StPWb2UlB29ZP71Kw/view?usp=sharing", icon: "https://static.wikia.nocookie.net/flutterbutter/images/b/bd/Mzl.pyrbezag.png/revision/latest?cb=20140304105513" },
-        { title: "Asphalt Nitro 2", dev: "Gameloft", cat: "Симуляторы", description: "Гоночный симулятор.", url: "https://drive.google.com/file/d/1v0W2XWGqTt-LNDZfe7YuTGUQ8dhPjtDZ/view?usp=sharing", icon: "https://static.wikia.nocookie.net/asphalt/images/1/1d/AN2_logo_icon.jpeg/revision/latest/scale-to-width-down/1200?cb=20230201172528" },
-        { title: "AIDA64", dev: "FinalWire", cat: "Приложения", description: "Диагностика системы.", url: "https://drive.google.com/file/d/1WACAdj1YxH0rxGQrMyZ9jn6aWBgGQFhc/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=d3a0083ce38b93c2cea9e6648c088e4e_l-9271022-images-thumbs&n=13" },
-        { title: "Doodle Jump", dev: "Lima Sky", cat: "Игры", description: "Прыгай как можно выше.", url: "https://drive.google.com/file/d/1aiiEUMtyNuL9aJ6h9dpRmwGewx-D7K-I/view?usp=sharing", icon: "https://i.pinimg.com/736x/be/df/ef/bedfef8d9a41c0ebd138efd429bfea61.jpg" },
-        { title: "Gismeteo", dev: "Gismeteo", cat: "Приложения", description: "Прогноз погоды.", url: "https://drive.google.com/file/d/1tN2YxBbkatgG-HQTIXVPuh1bIf-wVuCZ/view?usp=sharing", icon: "https://store-images.microsoft.com/image/apps.60866.9007199266243152.f4cda388-d997-4f17-828f-fc40aa3fd02b.07f8a582-5c6f-4e45-b5f8-e4c0f5479375" },
-        { title: "NotPipe", dev: "Team NewPipe", cat: "Приложения", description: "Клиент для YouTube.", url: "https://drive.google.com/file/d/1BFRh-M6CVv1Xz8Jc13KJSqMDV3v9NTK1/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=25e37bfe80620e25c71323c4fa53c3bfbac01c08-5843498-images-thumbs&n=13" },
-        { title: "Plants vs Zombies", dev: "PopCap", cat: "Игры", description: "Защищай дом от зомби.", url: "https://drive.google.com/file/d/1Kd5_5BD53PjiB87E9vk3MqXdeMpBLQr9/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=c92c9cf2a2876590857403ca3103f177_l-5676890-images-thumbs&n=13" },
-        { title: "fruit ninja Pib", dev: "Halfbrick", cat: "Игры", description: "Режь фрукты.", url: "https://drive.google.com/file/d/1ufTmkKxXrdXncdRPdJuWH2j8A6uyGy4d/view?usp=sharing", icon: "https://appleinsider.ru/wp-content/uploads/2011/10/Fruit-Ninja-Puss-in-Boots.png" },
-        { title: "Opera Classic", dev: "Opera", cat: "Приложения", description: "Классический браузер Opera.", url: "https://drive.google.com/file/d/18VgtkNmJahBI864_W3Ncva110HGnZv9q/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=ee85e90edd8d73b6265193e1f697a1c2948e8ac3-12184902-images-thumbs&n=13" },
-        { title: "Talking Bird", dev: "Outfit7", cat: "Игры", description: "Говорящая птица.", url: "https://drive.google.com/file/d/1P9hMR0Trb3qTshUgdITnAUxr_6BxFXiD/view?usp=sharing", icon: "https://i.pinimg.com/736x/cb/20/0f/cb200f4f968f0d005dd201850a1fbfc1.jpg" },
-        { title: "Minecraft Demo", dev: "Mojang", cat: "Игры", description: "Демо версия игры.", url: "https://drive.google.com/file/d/1v-ZqdCx34FrBknYiIj9DNseK3SX4EHer/view?usp=sharing", icon: "https://i.pinimg.com/originals/9e/ea/6c/9eea6cfc76afd8372abac37c528a221b.webp?nii=t" },
-        { title: "Talking Hippo", dev: "Outfit7", cat: "Игры", description: "Говорящий бегемот.", url: "https://drive.google.com/file/d/1e5KfrfT_P6nmmOZLYzuP5mLw_y2IrWE8/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=f43b46c5c654c4ed0a6cd9008777e55a_l-5220483-images-thumbs&n=13" },
-        { title: "Telegram X", dev: "Telegram", cat: "Соцсети", description: "Быстрый клиент Telegram.", url: "https://drive.google.com/file/d/1BUXYJnBxjQQquy6QvLpntH8yuwsp-DMj/view?usp=drive_link", icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Telegram_X_2019_Logo.svg/3840px-Telegram_X_2019_Logo.svg.png" },
-        { title: "Angry Birds Rio", dev: "Rovio", cat: "Игры", description: "Птицы в Рио.", url: "https://drive.google.com/file/d/1YU4A_ls6IxhtyMP2IVCerCfAoGyy_E-T/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=d05504126e4383c6188f2cd47836ed9c62c4f8ca-13101499-images-thumbs&n=13" },
-        { title: "Talking Roby the Robot", dev: "Outfit7", cat: "Игры", description: "Говорящий робот.", url: "https://drive.google.com/file/d/1eKoNRHrJ2T7kzqCGVLbKImhCodIsHFXw/view?usp=drive_link", icon: "https://avatars.mds.yandex.net/i?id=671e09815305f1c6109d9a0e9bee28e9_l-12585576-images-thumbs&n=13" },
-        { title: "Total Commander", dev: "Ghisler Software", cat: "Приложения", description: "Файловый менеджер.", url: "https://drive.google.com/file/d/1gq-hKoFSiAVQ7IABhw0mHodZ6vlZg31e/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=3abaaf9229404022f709b94b57e30223_l-5350544-images-thumbs&n=13" },
-        { title: "Tom Loves Angela", dev: "Outfit7", cat: "Игры", description: "История любви кота и кошки.", url: "https://drive.google.com/file/d/1d_9rqgMcvVpWej3nQ4daPzVvWKkuUd_O/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=2be35d84d19540ef6412ed3af24bd612e20e320d-5023294-images-thumbs&n=13" },
-        { title: "Antutu Benchmark", dev: "AnTuTu", cat: "Приложения", description: "Тест производительности.", url: "https://drive.google.com/file/d/1iv-fd7RPRnlVlx-9yOOKunLHaqPiVNjh/view?usp=sharing", icon: "https://play-lh.googleusercontent.com/5bvlS7f11DVP_XPW9YGYrfAf5RuRWj7I1YH_pqkm1D5_mpTtjiIgbzumAIwX64cnRg" },
-        { title: "Deltarune", dev: "Toby Fox", cat: "Игры", description: "Игра от создателя Undertale.", url: "https://drive.google.com/file/d/1xpvftdSgQFmhLpkyy1-BUi85B6g7AG81/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=3aafe89a062012fb297d05802e87554e_l-3717662-images-thumbs&n=13" },
-        { title: "Facebook Lite", dev: "Meta", cat: "Соцсети", description: "Легкая версия Facebook.", url: "https://drive.google.com/file/d/1mbgRAPAKxUfwNeD2EYRdMYgtna27mh8B/view?usp=sharing", icon: "https://i.pinimg.com/474x/a3/1f/b2/a31fb27d951f18cdac21d40b4d0d4135.jpg?nii=t" },
-        { title: "Talking Rex", dev: "Outfit7", cat: "Игры", description: "Говорящий динозавр.", url: "https://drive.google.com/file/d/1urwUW20pW4yvWyRvQKwsZP-_gSxPbTPr/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=8f55f390a19edc18b31a7c5957cf824a_l-5598196-images-thumbs&n=13" },
-        { title: "Swamp Attack", dev: "Outfit7", cat: "Игры", description: "Защита дома на болоте.", url: "https://drive.google.com/file/d/1xkNQppx0X03LO6AbjrDxx4KKnh927eve/view?usp=sharing", icon: "https://cdn.mobygames.com/covers/7959573-swamp-attack-iphone-front-cover.jpg" },
-        { title: "Root Explorer", dev: "Speed Software", cat: "Приложения", description: "Менеджер с root доступом.", url: "https://drive.google.com/file/d/1GT8gUlm59ebxByv766PsmFqmb3QeUGyi/view?usp=sharing", icon: "https://w7.pngwing.com/pngs/224/139/png-transparent-rooting-file-explorer-android-file-manager-android-blue-root-material.png" },
-        { title: "Chromium", dev: "Chromium Project", cat: "Приложения", description: "Основа для Chrome.", url: "https://drive.google.com/file/d/1IAbPLuNu-SuyBs4xj0De7pPpACq0IEbM/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=70047e0bb784a5037f613a55de908a4be6c41041-4033947-images-thumbs&n=13" },
-        { title: "Mozilla Firefox", dev: "Mozilla", cat: "Приложения", description: "Популярный браузер.", url: "https://drive.google.com/file/d/1zmMA8kUikh3Kh7BQIxJX025FpwD0LGCz/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=3503d21a141bf241bb4287eef007a6e71e52b2c8-5507408-images-thumbs&n=13" },
-        { title: "Dolphin Browser", dev: "Dolphin", cat: "Приложения", description: "Браузер с поддержкой жестов.", url: "https://drive.google.com/file/d/1Gwouru6PWVOJG3feGK8PYcX-4Nset-9E/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=01baaac82a8e3879b2aec7110ad1f7e6398ed9be-3557494-images-thumbs&n=13" },
-        { title: "Talking Pierre", dev: "Outfit7", cat: "Игры", description: "Говорящий попугай.", url: "https://drive.google.com/file/d/1cIa-0hhefmskANZ-_RHirBYa1zFncPZA/view?usp=drive_link", icon: "https://avatars.mds.yandex.net/i?id=0cbf5d03d9dfa32d83e2102d94980c6e39bf36d8-4743742-images-thumbs&n=13" },
-        { title: "My Talking Tom", dev: "Outfit7", cat: "Игры", description: "Мой говорящий Том.", url: "https://drive.google.com/file/d/1BSzsoinO3VwnKwpOCa5k1iFWtWKbSlHi/view?usp=sharing", icon: "https://i.pinimg.com/736x/80/4a/ca/804aca2f7b25f534e105144b35657dea.jpg" },
-        { title: "Kutegram", dev: "Kutegram", cat: "Соцсети", description: "Клиент для соцсетей.", url: "https://drive.google.com/file/d/1s6gzbOhFJp8MCRYMjyF53rdQ8SwbtxuY/view?usp=drive_link", icon: "https://trashbox.ru/apk_icons/2177468_320.png" },
-        { title: "My Talking Angela", dev: "Outfit7", cat: "Игры", description: "Моя говорящая Анджела.", url: "https://drive.google.com/file/d/1_PmPHM2iXRtDJMbdRKwyn1_bFpirQRwm/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=7cca4a7ed606601d52de4d9e9341ea9b0dadf3d8-5206345-images-thumbs&n=13" },
-        { title: "Geometry Dash SubZero", dev: "RobTop Games", cat: "Игры", description: "Хардкорный платформер.", url: "https://drive.google.com/file/d/1BZE7UH_NzaF3zIw4i2Q-NK2uiiRnh0H-/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=946d5ff5449fb741cda00f5b4562c2611708ef17-5485649-images-thumbs&n=13" },
-        { title: "Fruit Ninja Free", dev: "Halfbrick", cat: "Игры", description: "Классика про фрукты.", url: "https://drive.google.com/file/d/19Bmn-g5nyJe1seMYMBz7yjTmCBIjEldN/view?usp=sharing", icon: "https://i.pinimg.com/736x/4f/9d/19/4f9d191ec95ab0dd8aeaf24f80edeaaf.jpg" },
-        { title: "Android Gingerbread", dev: "Google", cat: "Системное", description: "ОС Android 2.3.", url: "https://drive.google.com/file/d/1WiNw9ZzanQhRIToR8hvPbxJLy22pgFeB/view?usp=sharing", icon: "https://upload.wikimedia.org/wikipedia/commons/e/e0/Android_Gingerbread_logo.png" },
-        { title: "Одноклассники Lite", dev: "OK.ru", cat: "Соцсети", description: "Социальная сеть.", url: "https://drive.google.com/file/d/1nbdXu_SCb-BpC7pNj2Od6BJBDcjvta4Y/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=b7d4c156dd6f66d627a798d4aba3e7db29b20b24-5440198-images-thumbs&n=13" },
-        { title: "Hill Climb Racing", dev: "Fingersoft", cat: "Игры", description: "Гонки по холмам.", url: "https://drive.google.com/file/d/1AYR2hfdcQLK9Pptt5tuU_bAT1-kNejB5/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=22b97226dbe41128a1412028fbe92641345c6135-16405156-images-thumbs&n=13" }
+        { title: "Xperia Launcher", dev: "Sony", cat: "Приложения", description: "Лаунчер в стиле Sony Xperia.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://lh3.ggpht.com/gCtdzfCgHO4opGAhJXCXxmf4geNnL5M6qclFc-Ah6l5QNkwDVwBhY49mbp4DFe5Lc41P" },
+        { title: "Яндекс Погода", dev: "Yandex", cat: "Приложения", description: "Точный прогноз погоды в вашем городе.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://trashbox.ru/ifiles2/783790_f4f90b_og_image.png/yandeks.pogoda-vyshla-na-windows-phone-1.webp" },
+        { title: "OpenVK", dev: "OpenVK Team", cat: "Соцсети", description: "Альтернативный клиент для соцсети VK.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://4pda.to/s/j7797bh6z2F8uPQjSFojITkGNQmFhaAz1HDGB.png" },
+        { title: "Kate Mobile", dev: "Kate", cat: "Соцсети", description: "Классический клиент для VK.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://play-lh.googleusercontent.com/fCEL_ORrwZjRtJg_KI6AiqXyu1Gg6qsIvQOWNX25c0YFrMQ0Jz93RCNEGFWMctkVUuc1=w600-h300-pc0xffffff-pd" },
+        { title: "Jetpack Joyride", dev: "Halfbrick", cat: "Игры", description: "Бесконечный раннер про полет на джетпаке.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=0811caaec753042ddcd41fccc022a766c5c95b84-5569020-images-thumbs&n=13" },
+        { 
+            title: "Angry Birds Star Wars", 
+            dev: "Rovio", 
+            cat: "Игры", 
+            description: "Злые птицы в сеттинге Звездных Войн.", 
+            url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", 
+            icon: "https://images.gamespot.com/uploads/ignore_this_screen_name/supposedly_an_image_placeholder.jpg",
+            screenshot: "https://images.gamespot.com/uploads/screen_kubrick/1197/11970954/2357321-absw_trailer_screenshot_1.jpg" 
+        },
+        { title: "Undertale", dev: "Toby Fox", cat: "Игры", description: "RPG, где вы можете никого не убивать.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://i.pinimg.com/originals/3d/91/1e/3d911edb3c3b52e04f6c08b95b3b97ce.jpg?nii=t" },
+        { title: "Talking Angela", dev: "Outfit7", cat: "Игры", description: "Виртуальный питомец Анджела.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://i.pinimg.com/originals/1f/f5/66/1ff5664574601bd4beb5bfd39345f63b.png?nii=t" },
+        { title: "Play Market", dev: "Google", cat: "Приложения", description: "Магазин приложений для Android.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://i.pinimg.com/originals/4b/95/0d/4b950dfeae8f9edbf0ad7f534ac89bd7.jpg?nii=t" },
+        { title: "Bad Piggies", dev: "Rovio", cat: "Игры", description: "Головоломка про строительство техники для свиней.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://static.wikia.nocookie.net/badpiggiesgame/images/c/cd/533451786_mzm.rjnqtfdu.png/revision/latest?cb=20121029133803" },
+        { title: "Talking Harry", dev: "Outfit7", cat: "Игры", description: "Говорящий Гарри.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=85ab069b353b71404d06a5ad639b2eb67160090e-11444350-images-thumbs&n=13" },
+        { title: "Instagram Lite", dev: "Instagram", cat: "Соцсети", description: "Облегченная версия Instagram.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://play-lh.googleusercontent.com/h9THn4Ou1Qz9_CpTVxtatkF8yZV9YP2T3D6-ZxMvsnV0TbLL_LiVIMmTprcosjq0SPHu=w600-h300-pc0xffffff-pd" },
+        { title: "Cut the Rope Experiments", dev: "ZeptoLab", cat: "Игры", description: "Головоломка с Ам Нямом.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=6794b89aac5b211ce732c728307612d8b112ce46-10494455-images-thumbs&n=13" },
+        { title: "Cut the Rope: Time Travel", dev: "ZeptoLab", cat: "Игры", description: "Путешествие во времени с Ам Нямом.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://upload.wikimedia.org/wikipedia/ru/6/63/Cut_the_Rope-_Time_Travel-Logo.jpeg" },
+        { title: "Talking Tom Cat", dev: "Outfit7", cat: "Игры", description: "Первый говорящий кот.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=4fc21b57a74d91e394dc4f3f2d9f6c093deef435-5277049-images-thumbs&n=13" },
+        { title: "Talking Santa", dev: "Outfit7", cat: "Игры", description: "Говорящий Санта Клаус.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=113628f343f0285b8aa89c059d4b0b6d_l-5383459-images-thumbs&n=13" },
+        { title: "Google Maps", dev: "Google", cat: "Приложения", description: "Карты и навигация.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=86d86ae777eb0584d60c1ff34cac52761c94c7d2-5251072-images-thumbs&n=13" },
+        { title: "TikTok Lite", dev: "TikTok", cat: "Соцсети", description: "Легкая версия TikTok.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://play-lh.googleusercontent.com/3IsKguab6RdO2U-jim9f5nO1aZZuo-V0o24W9ar0JFpM_0IwaXaM1mi_-RSP_1IHf7E_XC4UC_U8-g7s_pHWFOE=w600-h300-pc0xffffff-pd" },
+        { title: "Яндекс Браузер", dev: "Yandex", cat: "Приложения", description: "Браузер с Алисой.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://w7.pngwing.com/pngs/910/334/png-transparent-yandex-browser-web-browser-firefox-google-chrome-opera-google-plus-google-plus-computer-program-sphere-internet.png" },
+        { title: "4PDA", dev: "4PDA", cat: "Приложения", description: "Клиент форума 4PDA.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://cdnb.nashstore.ru/api/v1/media/ca961c9f075925b85a2405bf/original" },
+        { title: "Google Chrome", dev: "Google", cat: "Приложения", description: "Быстрый браузер.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Chrome_icon_%28September_2014%29.svg/500px-Google_Chrome_icon_%28September_2014%29.svg.png" },
+        { title: "Angry Birds", dev: "Rovio", cat: "Игры", description: "Классическая игра про злых птиц.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://i.pinimg.com/originals/9e/3d/8a/9e3d8a0e6e85c7c136bcdd39f2ce40c0.png" },
+        { title: "Flappy Bird", dev: ".GEARS", cat: "Игры", description: "Сложная игра про летающую птичку.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://static.wikia.nocookie.net/igromania/images/d/db/Flappy_Bird.jpeg/revision/latest?cb=20231126155241&path-prefix=ru" },
+        { title: "Cut the Rope", dev: "ZeptoLab", cat: "Игры", description: "Накорми Ам Няма леденцом.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://static.wikia.nocookie.net/flutterbutter/images/b/bd/Mzl.pyrbezag.png/revision/latest?cb=20140304105513" },
+        { title: "Asphalt Nitro 2", dev: "Gameloft", cat: "Симуляторы", description: "Гоночный симулятор.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://static.wikia.nocookie.net/asphalt/images/1/1d/AN2_logo_icon.jpeg/revision/latest/scale-to-width-down/1200?cb=20230201172528" },
+        { title: "AIDA64", dev: "FinalWire", cat: "Приложения", description: "Диагностика системы.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=d3a0083ce38b93c2cea9e6648c088e4e_l-9271022-images-thumbs&n=13" },
+        { title: "Doodle Jump", dev: "Lima Sky", cat: "Игры", description: "Прыгай как можно выше.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://i.pinimg.com/736x/be/df/ef/bedfef8d9a41c0ebd138efd429bfea61.jpg" },
+        { title: "Gismeteo", dev: "Gismeteo", cat: "Приложения", description: "Прогноз погоды.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://store-images.microsoft.com/image/apps.60866.9007199266243152.f4cda388-d997-4f17-828f-fc40aa3fd02b.07f8a582-5c6f-4e45-b5f8-e4c0f5479375" },
+        { title: "NotPipe", dev: "Team NewPipe", cat: "Приложения", description: "Клиент для YouTube.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=25e37bfe80620e25c71323c4fa53c3bfbac01c08-5843498-images-thumbs&n=13" },
+        { title: "Plants vs Zombies", dev: "PopCap", cat: "Игры", description: "Защищай дом от зомби.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=c92c9cf2a2876590857403ca3103f177_l-5676890-images-thumbs&n=13" },
+        { title: "fruit ninja Pib", dev: "Halfbrick", cat: "Игры", description: "Режь фрукты.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://appleinsider.ru/wp-content/uploads/2011/10/Fruit-Ninja-Puss-in-Boots.png" },
+        { title: "Opera Classic", dev: "Opera", cat: "Приложения", description: "Классический браузер Opera.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=ee85e90edd8d73b6265193e1f697a1c2948e8ac3-12184902-images-thumbs&n=13" },
+        { title: "Talking Bird", dev: "Outfit7", cat: "Игры", description: "Говорящая птица.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://i.pinimg.com/736x/cb/20/0f/cb200f4f968f0d005dd201850a1fbfc1.jpg" },
+        { title: "Minecraft Demo", dev: "Mojang", cat: "Игры", description: "Демо версия игры.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://i.pinimg.com/originals/9e/ea/6c/9eea6cfc76afd8372abac37c528a221b.webp?nii=t" },
+        { title: "Talking Hippo", dev: "Outfit7", cat: "Игры", description: "Говорящий бегемот.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=f43b46c5c654c4ed0a6cd9008777e55a_l-5220483-images-thumbs&n=13" },
+        { title: "Telegram X", dev: "Telegram", cat: "Соцсети", description: "Быстрый клиент Telegram.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Telegram_X_2019_Logo.svg/3840px-Telegram_X_2019_Logo.svg.png" },
+        { title: "Angry Birds Rio", dev: "Rovio", cat: "Игры", description: "Птицы в Рио.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=d05504126e4383c6188f2cd47836ed9c62c4f8ca-13101499-images-thumbs&n=13" },
+        { title: "Talking Roby the Robot", dev: "Outfit7", cat: "Игры", description: "Говорящий робот.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=671e09815305f1c6109d9a0e9bee28e9_l-12585576-images-thumbs&n=13" },
+        { title: "Total Commander", dev: "Ghisler Software", cat: "Приложения", description: "Файловый менеджер.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=3abaaf9229404022f709b94b57e30223_l-5350544-images-thumbs&n=13" },
+        { title: "Tom Loves Angela", dev: "Outfit7", cat: "Игры", description: "История любви кота и кошки.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=2be35d84d19540ef6412ed3af24bd612e20e320d-5023294-images-thumbs&n=13" },
+        { title: "Antutu Benchmark", dev: "AnTuTu", cat: "Приложения", description: "Тест производительности.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://play-lh.googleusercontent.com/5bvlS7f11DVP_XPW9YGYrfAf5RuRWj7I1YH_pqkm1D5_mpTtjiIgbzumAIwX64cnRg" },
+        { title: "Deltarune", dev: "Toby Fox", cat: "Игры", description: "Игра от создателя Undertale.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=3aafe89a062012fb297d05802e87554e_l-3717662-images-thumbs&n=13" },
+        { title: "Facebook Lite", dev: "Meta", cat: "Соцсети", description: "Легкая версия Facebook.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://i.pinimg.com/474x/a3/1f/b2/a31fb27d951f18cdac21d40b4d0d4135.jpg?nii=t" },
+        { title: "Talking Rex", dev: "Outfit7", cat: "Игры", description: "Говорящий динозавр.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=8f55f390a19edc18b31a7c5957cf824a_l-5598196-images-thumbs&n=13" },
+        { title: "Swamp Attack", dev: "Outfit7", cat: "Игры", description: "Защита дома на болоте.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://cdn.mobygames.com/covers/7959573-swamp-attack-iphone-front-cover.jpg" },
+        { title: "Root Explorer", dev: "Speed Software", cat: "Приложения", description: "Менеджер с root доступом.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://w7.pngwing.com/pngs/224/139/png-transparent-rooting-file-explorer-android-file-manager-android-blue-root-material.png" },
+        { title: "Chromium", dev: "Chromium Project", cat: "Приложения", description: "Основа для Chrome.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=70047e0bb784a5037f613a55de908a4be6c41041-4033947-images-thumbs&n=13" },
+        { title: "Mozilla Firefox", dev: "Mozilla", cat: "Приложения", description: "Популярный браузер.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=3503d21a141bf241bb4287eef007a6e71e52b2c8-5507408-images-thumbs&n=13" },
+        { title: "Dolphin Browser", dev: "Dolphin", cat: "Приложения", description: "Браузер с поддержкой жестов.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=01baaac82a8e3879b2aec7110ad1f7e6398ed9be-3557494-images-thumbs&n=13" },
+        { title: "Talking Pierre", dev: "Outfit7", cat: "Игры", description: "Говорящий попугай.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=0cbf5d03d9dfa32d83e2102d94980c6e39bf36d8-4743742-images-thumbs&n=13" },
+        { title: "My Talking Tom", dev: "Outfit7", cat: "Игры", description: "Мой говорящий Том.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://i.pinimg.com/736x/80/4a/ca/804aca2f7b25f534e105144b35657dea.jpg" },
+        { title: "Kutegram", dev: "Kutegram", cat: "Соцсети", description: "Клиент для соцсетей.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://trashbox.ru/apk_icons/2177468_320.png" },
+        { title: "My Talking Angela", dev: "Outfit7", cat: "Игры", description: "Моя говорящая Анджела.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=7cca4a7ed606601d52de4d9e9341ea9b0dadf3d8-5206345-images-thumbs&n=13" },
+        { title: "Geometry Dash SubZero", dev: "RobTop Games", cat: "Игры", description: "Хардкорный платформер.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=946d5ff5449fb741cda00f5b4562c2611708ef17-5485649-images-thumbs&n=13" },
+        { title: "Fruit Ninja Free", dev: "Halfbrick", cat: "Игры", description: "Классика про фрукты.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://i.pinimg.com/736x/4f/9d/19/4f9d191ec95ab0dd8aeaf24f80edeaaf.jpg" },
+        { title: "Android Gingerbread", dev: "Google", cat: "Системное", description: "ОС Android 2.3.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://upload.wikimedia.org/wikipedia/commons/e/e0/Android_Gingerbread_logo.png" },
+        { title: "Одноклассники Lite", dev: "OK.ru", cat: "Соцсети", description: "Социальная сеть.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=b7d4c156dd6f66d627a798d4aba3e7db29b20b24-5440198-images-thumbs&n=13" },
+        { title: "Hill Climb Racing", dev: "Fingersoft", cat: "Игры", description: "Гонки по холмам.", url: "https://drive.google.com/file/d/1L2nPCZa8cDpMeKIJOuGZJ5DU4M28Bbuf/view?usp=sharing", icon: "https://avatars.mds.yandex.net/i?id=22b97226dbe41128a1412028fbe92641345c6135-16405156-images-thumbs&n=13" }
     ];
 
     let currentCat = 'Все';
 
+    function toggleTheme() {
+        document.body.classList.toggle('dark-theme');
+        const isDark = document.body.classList.contains('dark-theme');
+        const t = translations[currentLang];
+        document.getElementById('theme-status-text').innerText = isDark ? t.themeDark : t.themeLight;
+    }
+
+    function changeLanguage(lang) {
+        currentLang = lang;
+        const t = translations[lang];
+
+        document.getElementById('search').placeholder = t.searchPlaceholder;
+        document.getElementById('lbl-categories').innerText = t.categories;
+        document.getElementById('btn-all').innerText = t.allElements;
+        document.getElementById('btn-apps').innerText = t.apps;
+        document.getElementById('btn-games').innerText = t.games;
+
+        document.getElementById('cat-all').innerText = "📦 " + t.allElements;
+        document.getElementById('cat-apps').innerText = "📱 " + t.apps;
+        document.getElementById('cat-games').innerText = "🎮 " + t.games;
+        document.getElementById('cat-social').innerText = "💬 " + t.social;
+        document.getElementById('cat-sim').innerText = "🚗 " + t.sim;
+        document.getElementById('cat-sys').innerText = "⚙️ " + t.sys;
+
+        document.getElementById('lbl-back-list').innerText = t.backToList;
+        document.getElementById('lbl-back').innerText = t.back;
+        document.getElementById('set-title').innerText = t.settings;
+        document.getElementById('set-theme-title').innerText = t.themeTitle;
+        document.getElementById('set-theme-btn').innerText = t.themeBtn;
+        document.getElementById('set-lang-title').innerText = t.langTitle;
+        document.getElementById('set-rules-title').innerText = t.rulesTitle;
+        document.getElementById('set-rules-desc').innerText = t.rulesDesc;
+        document.getElementById('set-about-title').innerText = t.aboutTitle;
+        document.getElementById('set-about-desc').innerText = t.aboutDesc;
+        document.getElementById('set-source-title').innerText = t.sourceTitle;
+        document.getElementById('set-source-desc').innerText = t.sourceDesc;
+
+        document.getElementById('rules-page-title').innerText = t.rulesTitle;
+        document.getElementById('rules-page-text').innerText = t.safetyText;
+        document.getElementById('rules-back').innerText = t.back;
+
+        document.getElementById('about-page-title').innerText = t.aboutTitle;
+        document.getElementById('about-creator').innerHTML = t.creator;
+        document.getElementById('about-helpers').innerHTML = t.helpers;
+        document.getElementById('about-back').innerText = t.back;
+
+        document.getElementById('source-page-title').innerText = t.sourceTitle;
+        document.getElementById('source-back').innerText = t.back;
+
+        const isDark = document.body.classList.contains('dark-theme');
+        document.getElementById('theme-status-text').innerText = isDark ? t.themeDark : t.themeLight;
+
+        document.querySelectorAll('.download-btn:not(#set-theme-btn)').forEach(btn => {
+            if(btn.id !== 'detail-link') btn.innerText = t.install;
+        });
+        document.getElementById('detail-link').innerText = t.install;
+
+        renderApps();
+    }
+
     document.getElementById('full-code').value = document.documentElement.outerHTML;
 
-    function toggleDropdown() { const d = document.getElementById('dropdown-menu'); d.style.display = (d.style.display === 'block') ? 'none' : 'block'; }
-    function changeTheme(t) { document.documentElement.setAttribute('data-theme', t); }
+    function toggleDropdown() { 
+        const d = document.getElementById('dropdown-menu'); 
+        d.style.display = (d.style.display === 'block') ? 'none' : 'block'; 
+    }
+
     function showPage(id) { 
         document.querySelectorAll('.page').forEach(p => p.style.display = 'none'); 
         document.getElementById(id + '-page').style.display = 'block'; 
         document.getElementById('dropdown-menu').style.display = 'none';
+        window.scrollTo(0, 0);
     }
     
     function filterCat(cat) { 
@@ -185,30 +734,39 @@
         renderApps(); 
     }
 
-    // Функция открытия деталей
     function openApp(title) {
         const app = ALL_APPS.find(a => a.title === title);
         if(!app) return;
+        const t = translations[currentLang];
         document.getElementById('detail-icon').src = app.icon;
         document.getElementById('detail-title').innerText = app.title;
-        document.getElementById('detail-dev').innerText = "Разработчик: " + app.dev;
+        document.getElementById('detail-dev').innerText = t.devPrefix + app.dev;
         document.getElementById('detail-desc').innerText = app.description;
         document.getElementById('detail-link').href = app.url;
+
+        const screenshotImg = document.getElementById('detail-screenshot');
+        if (app.screenshot) {
+            screenshotImg.src = app.screenshot;
+            screenshotImg.style.display = 'block';
+        } else {
+            screenshotImg.style.display = 'none';
+        }
+
         showPage('detail');
     }
 
     function renderApps() {
         const list = document.getElementById('dynamic-list');
         const query = document.getElementById('search').value.toLowerCase();
+        const t = translations[currentLang];
         list.innerHTML = "";
         ALL_APPS.filter(a => (currentCat === 'Все' || a.cat === currentCat) && a.title.toLowerCase().includes(query)).forEach(app => {
-            // Добавили onclick="openApp"
             list.innerHTML += `
-                <div class="card" onclick="openApp('${app.title.replace(/'/g, "\\'")}')" style="cursor:pointer;">
+                <div class="card" onclick="openApp('${app.title.replace(/'/g, "\\'")}')">
                     <img src="${app.icon}" class="app-icon" alt="${app.title}">
                     <h3>${app.title}</h3>
                     <p>${app.dev}</p>
-                    <a href="#" class="download-btn" onclick="event.stopPropagation(); window.open('${app.url}', '_blank'); return false;">Установить</a>
+                    <a href="${app.url}" class="download-btn" download onclick="event.stopPropagation();">${t.install}</a>
                 </div>`;
         });
     }
