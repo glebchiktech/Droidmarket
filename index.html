@@ -1,221 +1,286 @@
+Вот вариант с максимальным скевоморфизмом эпохи 2000-х: с сочными глянцевыми бликами (эффект стекла и леденца), глубокими металлическими градиентами, выпуклыми рамками с внутренним свечением (как в Windows Vista, Windows 7 Aero и раннем Android Market), текстурными кнопками и тяжелыми тенями.
+Весь оригинальный функционал (все приложения из базы без единого сокращения, счётчик посещений, автоопределение страны, переключение тем и полный исходный код) полностью сохранен:
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Play</title>
+    <title>Google Play / Android Market - 2000s Edition</title>
     <style>
         :root {
-            --bg-color: #e2e2e2;
-            --header-bg: #333333;
-            --text-main: #222222;
-            --card-bg: #ffffff;
-            --card-border: #dcdcdc;
-            --green-btn: #689f38;
+            --bg-color: #a6b9c7;
+            --header-bg: linear-gradient(to bottom, #3a6ea5 0%, #10396c 50%, #0c2b51 51%, #194a80 100%);
+            --text-main: #111111;
+            --text-secondary: #444444;
+            --card-bg: linear-gradient(to bottom, #ffffff 0%, #e3e8ee 100%);
+            --card-border: #6d84a2;
+            --accent: #5c93d8;
+            --accent-hover: #3b73b8;
+            --badge-bg: linear-gradient(to bottom, #4f6b85 0%, #293a4c 100%);
+            --input-bg: linear-gradient(to bottom, #ffffff 0%, #f0f4f8 100%);
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #181c22;
+            --header-bg: linear-gradient(to bottom, #2b3542 0%, #13171d 50%, #0d1014 51%, #1d2530 100%);
+            --text-main: #f0f4f8;
+            --text-secondary: #a0b0c0;
+            --card-bg: linear-gradient(to bottom, #2a333f 0%, #1c222b 100%);
+            --card-border: #4d5d73;
+            --accent: #4a80c4;
+            --accent-hover: #3967a3;
+            --badge-bg: linear-gradient(to bottom, #222a35 0%, #11151b 100%);
+            --input-bg: linear-gradient(to bottom, #222933 0%, #151a21 100%);
         }
         
         body {
-            font-family: 'Roboto', sans-serif, Arial;
+            font-family: 'Tahoma', 'Arial', sans-serif;
             background-color: var(--bg-color);
+            background-image: radial-gradient(circle at 50% 0%, #d8e4f0 0%, #8ca9c3 100%);
             color: var(--text-main);
             margin: 0;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        [data-theme="dark"] body {
+            background-image: radial-gradient(circle at 50% 0%, #2c3848 0%, #0f1318 100%);
         }
         
         header {
             position: sticky;
             top: 0;
             background: var(--header-bg);
-            padding: 10px 15px;
+            padding: 12px 20px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 15px;
             z-index: 1000;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            border-bottom: 2px solid #061a33;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.4);
+            flex-wrap: wrap;
         }
         
         .play-logo-container {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             cursor: pointer;
         }
         
         .play-bag {
-            width: 28px;
-            height: 28px;
-            background: #ffffff;
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(to bottom, #ffffff 0%, #d0e0f0 50%, #acd0ee 51%, #ffffff 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 3px;
+            border-radius: 8px;
+            border: 1px solid #10396c;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 3px 6px rgba(0,0,0,0.4);
         }
         
         .play-bag img {
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
+            filter: drop-shadow(0 1px 1px rgba(0,0,0,0.3));
         }
         
         header h1 {
             color: #ffffff;
             margin: 0;
-            font-size: 18px;
-            font-weight: 500;
+            font-size: 20px;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8), 0 -1px 0 rgba(0,0,0,0.5);
+            letter-spacing: 0.5px;
         }
 
         .search-box {
             flex-grow: 1;
             display: flex;
             align-items: center;
-            background: #ffffff;
-            border-radius: 2px;
-            padding: 0 8px;
+            background: var(--input-bg);
+            border-radius: 6px;
+            padding: 0 12px;
+            min-width: 180px;
+            border: 1px solid #204a87;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.5);
         }
 
         .search-box input {
             width: 100%;
-            padding: 6px;
+            padding: 8px 0;
             border: none;
             outline: none;
-            font-size: 14px;
+            font-size: 13px;
             background: transparent;
+            color: var(--text-main);
+            font-weight: bold;
         }
 
         .header-icons {
             color: #ffffff;
-            font-size: 20px;
+            font-size: 18px;
             cursor: pointer;
-            padding: 0 5px;
+            padding: 6px 12px;
+            background: linear-gradient(to bottom, #5a8bc4 0%, #29548a 50%, #1a3c66 51%, #3467a3 100%);
+            border: 1px solid #10396c;
+            border-radius: 6px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), 0 3px 6px rgba(0,0,0,0.4);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+            transition: filter 0.2s;
+        }
+
+        .header-icons:active {
+            filter: brightness(0.85);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
         }
 
         .market-container {
             max-width: 900px;
             margin: auto;
-            padding: 10px;
+            padding: 20px 15px;
             flex: 1;
             width: 100%;
             box-sizing: border-box;
         }
 
-        /* 6 Category Buttons Grid matching the screenshot */
         .categories-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 6px;
-            margin-bottom: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
         .cat-tile {
-            padding: 12px 15px;
+            padding: 12px 14px;
             color: white;
             font-weight: bold;
-            font-size: 13px;
-            border-radius: 2px;
+            font-size: 12px;
+            border-radius: 8px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             text-transform: uppercase;
-            box-shadow: inset 0 -3px 0 rgba(0,0,0,0.2);
-            transition: opacity 0.2s;
+            border: 1px solid rgba(0,0,0,0.5);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 4px 8px rgba(0,0,0,0.4);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.7);
+            transition: filter 0.2s, transform 0.1s;
+        }
+
+        .cat-tile:hover {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
         }
 
         .cat-tile:active {
-            opacity: 0.8;
+            filter: brightness(0.85);
+            transform: translateY(1px);
         }
 
-        .cat-apps { background-color: #8bc34a; }
-        .cat-games { background-color: #689f38; }
-        .cat-movies { background-color: #e53935; }
-        .cat-music { background-color: #fb8c00; }
-        .cat-books { background-color: #039be5; }
-        .cat-magazines { background-color: #5e35b1; }
+        .cat-apps { background: linear-gradient(to bottom, #86c141 0%, #538e1b 50%, #3f7011 51%, #65a127 100%); }
+        .cat-games { background: linear-gradient(to bottom, #5cb85c 0%, #3d8b3d 50%, #2d6b2d 51%, #4cae4c 100%); }
+        .cat-movies { background: linear-gradient(to bottom, #d9534f 0%, #c9302c 50%, #ac2925 51%, #d43f3a 100%); }
+        .cat-music { background: linear-gradient(to bottom, #f0ad4e 0%, #ec971f 50%, #d58512 51%, #eea236 100%); }
+        .cat-books { background: linear-gradient(to bottom, #5bc0de 0%, #31b0d5 50%, #269abc 51%, #46b8da 100%); }
+        .cat-magazines { background: linear-gradient(to bottom, #9370db 0%, #7b68ee 50%, #6a5acd 51%, #8a2be2 100%); }
 
         .cat-icon {
-            font-size: 18px;
+            font-size: 16px;
+            filter: drop-shadow(0 1px 1px rgba(0,0,0,0.5));
         }
 
         .section-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin: 15px 5px 8px 5px;
-            border-bottom: 1px solid #dcdcdc;
-            padding-bottom: 4px;
+            margin: 20px 5px 12px 5px;
+            border-bottom: 2px solid #5a7b9c;
+            padding-bottom: 8px;
+            box-shadow: 0 1px 0 rgba(255,255,255,0.5);
         }
 
         .section-title {
             font-size: 16px;
-            color: #555555;
+            color: var(--text-main);
             font-style: italic;
-            font-weight: 400;
+            font-weight: bold;
             margin: 0;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.7);
         }
 
         .section-subtitle {
             font-size: 12px;
-            color: #777777;
-            margin: 0 0 5px 5px;
+            color: var(--text-secondary);
+            margin: 2px 0 0 0;
+            font-weight: bold;
         }
 
         .see-more-btn {
-            background-color: #8bc34a;
+            background: linear-gradient(to bottom, #72a4e4 0%, #3b73b8 50%, #265591 51%, #4c8cd0 100%);
             color: white;
-            border: none;
-            padding: 4px 10px;
+            border: 1px solid #1a3c66;
+            padding: 6px 14px;
             font-size: 11px;
             font-weight: bold;
-            border-radius: 2px;
+            border-radius: 6px;
             cursor: pointer;
             text-transform: uppercase;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 3px 6px rgba(0,0,0,0.4);
+            text-shadow: 0 -1px 0 rgba(0,0,0,0.6);
         }
 
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 10px;
+            gap: 15px;
         }
 
         .card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            padding: 10px;
-            border-radius: 2px;
+            padding: 14px;
+            border-radius: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.9);
         }
 
         .app-icon {
-            width: 70px;
-            height: 70px;
-            border-radius: 8px;
-            margin-bottom: 8px;
+            width: 72px;
+            height: 72px;
+            border-radius: 14px;
+            margin-bottom: 10px;
             object-fit: contain;
-            background: #fff;
-            border: 1px solid #eee;
+            background: #ffffff;
+            border: 1px solid #8aa2be;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.25), inset 0 1px 2px rgba(255,255,255,0.8);
         }
 
         .card h3 {
             font-size: 13px;
             margin: 0 0 4px 0;
-            color: #222;
+            color: var(--text-main);
             overflow: hidden;
             text-overflow: ellipsis;
             display: -webkit-box;
             -webkit-line-clamp: 1;
             -webkit-box-orient: vertical;
             width: 100%;
+            font-weight: bold;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.5);
         }
 
         .card p {
             font-size: 11px;
-            color: #777;
-            margin: 0 0 8px 0;
+            color: var(--text-secondary);
+            margin: 0 0 10px 0;
+            font-weight: bold;
         }
 
         .card-meta {
@@ -224,85 +289,123 @@
             align-items: center;
             width: 100%;
             margin-top: auto;
-            padding-top: 5px;
+            padding-top: 6px;
         }
 
         .stars {
-            color: #ccc;
-            font-size: 10px;
+            color: #ffbb00;
+            font-size: 11px;
             letter-spacing: 1px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
         }
 
         .free-badge {
-            color: #689f38;
+            color: #3f7011;
             font-weight: bold;
             font-size: 11px;
             text-transform: uppercase;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.6);
         }
 
         .download-btn {
-            background: #689f38;
-            padding: 6px;
+            background: linear-gradient(to bottom, #86c141 0%, #538e1b 50%, #3f7011 51%, #65a127 100%);
+            padding: 8px;
             text-decoration: none;
             color: #fff;
-            border-radius: 2px;
+            border-radius: 6px;
             display: block;
             text-align: center;
-            margin-top: 8px;
+            margin-top: 10px;
             font-weight: bold;
             font-size: 12px;
             width: 100%;
             box-sizing: border-box;
             text-transform: uppercase;
+            border: 1px solid #284c0a;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 3px 6px rgba(0,0,0,0.4);
+            text-shadow: 0 -1px 0 rgba(0,0,0,0.6);
+            transition: filter 0.2s;
+        }
+        
+        .download-btn:active {
+            filter: brightness(0.85);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
         }
 
         .page { display: none; padding: 10px 0; }
         
         .settings-card {
-            background: #fff;
-            padding: 12px;
-            margin-bottom: 8px;
-            border-radius: 2px;
+            background: var(--card-bg);
+            padding: 14px 18px;
+            margin-bottom: 12px;
+            border-radius: 8px;
             cursor: pointer;
-            border: 1px solid #dcdcdc;
+            border: 1px solid var(--card-border);
             font-size: 14px;
+            color: var(--text-main);
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.7);
+            transition: filter 0.2s;
+        }
+
+        .settings-card:hover {
+            filter: brightness(1.05);
+        }
+
+        .settings-card:active {
+            filter: brightness(0.9);
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.4);
         }
 
         textarea {
             width: 100%;
             height: 250px;
-            background: #111;
-            color: #0f0;
+            background: #0a0e14;
+            color: #00ff66;
             font-family: monospace;
             font-size: 11px;
-            border: 1px solid #444;
-            padding: 8px;
+            border: 2px inset #333;
+            padding: 10px;
             box-sizing: border-box;
+            border-radius: 6px;
+            box-shadow: inset 0 3px 8px rgba(0,0,0,0.9);
         }
 
         .banner {
-            background: linear-gradient(135deg, #0288d1, #7b1fa2);
+            background: linear-gradient(135deg, #2b5876 0%, #4e4376 100%);
             color: white;
-            padding: 12px;
+            padding: 16px;
             text-align: center;
             cursor: pointer;
             font-weight: bold;
-            margin: 10px 0;
-            border-radius: 2px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            margin: 15px 0;
+            border-radius: 8px;
             font-size: 13px;
+            border: 1px solid #1a3c66;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.4);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
         }
 
-        .visitor-badge {
+        .info-badges {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .visitor-badge, .geo-badge {
             color: #ffffff;
-            font-size: 12px;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 4px 8px;
-            border-radius: 2px;
+            font-size: 11px;
+            background: var(--badge-bg);
+            padding: 6px 10px;
+            border-radius: 6px;
             white-space: nowrap;
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
+            border: 1px solid #10396c;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.7), 0 2px 4px rgba(0,0,0,0.4);
+            text-shadow: 0 1px 1px rgba(0,0,0,0.8);
+            font-weight: bold;
         }
     </style>
 </head>
@@ -315,11 +418,14 @@
         </div>
         <h1>Google Play</h1>
     </div>
-    <div class="visitor-badge">
-        👥 Зашло: <span id="visit-count">0</span>
+    
+    <div class="info-badges">
+        <div class="visitor-badge">👥 <span id="visit-count">0</span></div>
+        <div class="geo-badge" id="geo-location">🌍 Определение...</div>
     </div>
+
     <div class="search-box">
-        <input type="text" id="search" placeholder="Поиск..." onkeyup="renderApps()">
+        <input type="text" id="search" placeholder="Поиск приложений..." onkeyup="renderApps()">
     </div>
     <span class="header-icons" onclick="showPage('settings')">⚙️</span>
 </header>
@@ -327,38 +433,37 @@
 <main class="market-container">
     <div id="main-page" class="page" style="display:block;">
         
-        <!-- 6 Main Category Buttons matching the Google Play Holo UI -->
         <div class="categories-grid">
             <div class="cat-tile cat-apps" onclick="filterCat('Приложения')">
-                <span class="cat-icon">📱</span> Apps
+                <span class="cat-icon">📱</span> Приложения
             </div>
             <div class="cat-tile cat-games" onclick="filterCat('Игры')">
-                <span class="cat-icon">🎮</span> Games
+                <span class="cat-icon">🎮</span> Игры
             </div>
             <div class="cat-tile cat-movies" onclick="filterCat('Соцсети')">
-                <span class="cat-icon">💬</span> Social
+                <span class="cat-icon">💬</span> Соцсети
             </div>
             <div class="cat-tile cat-music" onclick="filterCat('Симуляторы')">
-                <span class="cat-icon">🚗</span> Simulators
+                <span class="cat-icon">🚗</span> Симуляторы
             </div>
             <div class="cat-tile cat-books" onclick="filterCat('Системное')">
-                <span class="cat-icon">⚙️</span> System
+                <span class="cat-icon">⚙️</span> Системное
             </div>
             <div class="cat-tile cat-magazines" onclick="filterCat('Все')">
-                <span class="cat-icon">📦</span> All Items
+                <span class="cat-icon">📦</span> Все
             </div>
         </div>
 
         <div class="banner" onclick="window.open('https://t.me/glebssonchikbyr', '_blank')">
-            Get Telegram Channel — t.me/glebssonchikbyr
+            Telegram Канал — t.me/glebssonchikbyr
         </div>
 
         <div class="section-header">
             <div>
-                <h2 class="section-title">Play Picks</h2>
-                <div class="section-subtitle">Recommended Apps & Games</div>
+                <h2 class="section-title">Рекомендации</h2>
+                <div class="section-subtitle">Популярные игры и программы</div>
             </div>
-            <button class="see-more-btn" onclick="filterCat('Все')">See More</button>
+            <button class="see-more-btn" onclick="filterCat('Все')">Ещё</button>
         </div>
 
         <div id="dynamic-list" class="grid"></div>
@@ -366,10 +471,19 @@
     
     <div id="settings-page" class="page">
         <h2>Настройки</h2>
-        <div class="settings-card" onclick="showPage('about')">О версии</div>
-        <div class="settings-card" onclick="showPage('rules')">Правила безопасности</div>
-        <div class="settings-card" onclick="showPage('source')">Исходный код</div>
+        <div class="settings-card" onclick="showPage('theme')">🎨 Тема оформления</div>
+        <div class="settings-card" onclick="showPage('about')">ℹ️ О версии</div>
+        <div class="settings-card" onclick="showPage('rules')">🛡️ Правила безопасности</div>
+        <div class="settings-card" onclick="showPage('source')">💻 Исходный код</div>
         <button class="download-btn" onclick="showPage('main')">Назад</button>
+    </div>
+
+    <div id="theme-page" class="page">
+        <h2>Тема оформления</h2>
+        <div class="settings-card" onclick="setTheme('light')">☀️ Светлая (Aero)</div>
+        <div class="settings-card" onclick="setTheme('dark')">🌙 Темная (Zune / Dark)</div>
+        <div class="settings-card" onclick="setTheme('auto')">💻 Автоматически (как в системе)</div>
+        <button class="download-btn" onclick="showPage('settings')">Назад</button>
     </div>
 
     <div id="rules-page" class="page">
@@ -380,9 +494,9 @@
 
     <div id="about-page" class="page">
         <h2>О версии</h2>
-        <p>Google Play / Android Market Classic UI</p>
-        <p>Создатель: <b>Глеб</b>[span_1](start_span)[span_1](end_span)</p>
-        <p>Помощники: <b>Ваня, Артем, Рома</b>[span_2](start_span)[span_2](end_span)</p>
+        <p>Google Play / Android Market 2000s Skeuomorphic Edition</p>
+        <p>Создатель: <b>Глеб</b></p>
+        <p>Помощники: <b>Ваня, Артем, Рома</b></p>
         <button class="download-btn" onclick="showPage('settings')">Назад</button>
     </div>
 
@@ -458,17 +572,64 @@
 
     document.getElementById('full-code').value = document.documentElement.outerHTML;
 
-    // Счётчик посещений (начинает с 0 и прибавляет при новом визите)
+    // Счётчик посещений
     let visits = localStorage.getItem('site_visits');
-    if (!visits) {
-        visits = 0;
-    }
+    if (!visits) { visits = 0; }
     if (!sessionStorage.getItem('visited_session')) {
         visits = parseInt(visits) + 1;
         localStorage.setItem('site_visits', visits);
         sessionStorage.setItem('visited_session', 'true');
     }
     document.getElementById('visit-count').textContent = visits;
+
+    // Автоопределение страны посетителя
+    fetch('https://ipapi.co/json/')
+        .then(response => response.json())
+        .then(data => {
+            const countryName = data.country_name || "Мир";
+            const countryCode = data.country_code ? data.country_code.toLowerCase() : '';
+            let flag = countryCode ? `https://flagcdn.com/24x18/${countryCode}.png` : '';
+            
+            let geoElement = document.getElementById('geo-location');
+            if (flag) {
+                geoElement.innerHTML = `<img src="${flag}" width="16" style="vertical-align: middle;"> ${countryName}`;
+            } else {
+                geoElement.textContent = `🌍 ${countryName}`;
+            }
+        })
+        .catch(() => {
+            document.getElementById('geo-location').textContent = "🌍 Онлайн";
+        });
+
+    // Управление темами (Светлая, Темная, Авто)
+    function setTheme(theme) {
+        localStorage.setItem('site_theme', theme);
+        applyTheme(theme);
+        showPage('settings');
+    }
+
+    function applyTheme(theme) {
+        if (theme === 'auto') {
+            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        } else {
+            document.documentElement.setAttribute('data-theme', theme);
+        }
+    }
+
+    // Инициализация темы при загрузке
+    let savedTheme = localStorage.getItem('site_theme') || 'auto';
+    applyTheme(savedTheme);
+
+    // Слушатель системной темы для режима "Авто"
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+        if (localStorage.getItem('site_theme') === 'auto') {
+            applyTheme('auto');
+        }
+    });
 
     function showPage(id) { 
         document.querySelectorAll('.page').forEach(p => p.style.display = 'none'); 
@@ -508,4 +669,3 @@
 </script>
 </body>
 </html>
-
